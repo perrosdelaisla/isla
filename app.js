@@ -15,6 +15,7 @@ const state = {
   nombrePerro: '',
   origen: 'directo',
   respuestas: {},
+  opcionElegidaIndex: {},
   resultado: null
 };
 
@@ -24,6 +25,11 @@ let chartTorta = null;
 async function init() {
   const params = new URLSearchParams(window.location.search);
   state.origen = (params.get('origen') || 'directo').trim() || 'directo';
+
+  document.getElementById('btn-anterior-pregunta').onclick = retrocederPregunta;
+  document.getElementById('btn-anterior-registro').onclick = function () {
+    showView('view-cierre');
+  };
 
   try {
     state.preguntas = await fetchPreguntas();
@@ -84,6 +90,7 @@ function handleContinuar() {
     state.nombrePerro = nombre;
     state.indicePregunta = 0;
     state.respuestas = {};
+    state.opcionElegidaIndex = {};
     showView('view-cuestionario');
     renderPregunta();
     return;
@@ -123,17 +130,29 @@ function renderPregunta() {
   const cont = document.getElementById('pregunta-opciones');
   cont.innerHTML = '';
   const opciones = Array.isArray(p.opciones) ? p.opciones : [];
-  opciones.forEach(op => {
+  opciones.forEach((op, idx) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'opcion';
+    if (state.opcionElegidaIndex[p.id] === idx) {
+      btn.classList.add('opcion-elegida');
+    }
     btn.textContent = op.label;
     btn.onclick = function () {
       state.respuestas[p.id] = op.puntos;
+      state.opcionElegidaIndex[p.id] = idx;
       avanzarPregunta();
     };
     cont.appendChild(btn);
   });
+
+  document.getElementById('btn-anterior-pregunta').hidden = (state.indicePregunta === 0);
+}
+
+function retrocederPregunta() {
+  if (state.indicePregunta === 0) return;
+  state.indicePregunta--;
+  renderPregunta();
 }
 
 function avanzarPregunta() {
