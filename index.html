@@ -3,39 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perros de la Isla — Próximamente</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #F5EFE0;
-      color: #1A1A1A;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 24px;
-    }
-    h1 {
-      font-size: 28px;
-      margin: 0 0 12px;
-      letter-spacing: 0.5px;
-    }
-    p {
-      font-size: 16px;
-      opacity: 0.7;
-      margin: 0;
-      max-width: 480px;
-    }
-  </style>
+  <title>Perros de la Isla — Evaluación</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Perros de la Isla</h1>
-  <p>Próximamente.</p>
+  <div id="loading" class="view-loading">
+    <p>Cargando…</p>
+  </div>
+
+  <section id="view-bienvenida" class="view hidden">
+    <div class="container narrow">
+      <h1 class="display">Tu perro merece ser feliz hoy.</h1>
+      <p class="lead">Descubre cómo está tu perro en 4 minutos.</p>
+      <p class="body">Te haremos preguntas sobre cuatro áreas del bienestar de tu perro: cómo está físicamente, cómo gestiona sus emociones, cómo se relaciona, y cómo usa su cabeza. Al terminar te mostraremos un mapa con lo que vimos.</p>
+      <button class="btn-primary" onclick="handleContinuar()">Empezar evaluación</button>
+    </div>
+  </section>
+
+  <section id="view-nombre-perro" class="view hidden">
+    <div class="container narrow">
+      <h2 class="display-sm">Antes de empezar, ¿cómo se llama tu perro?</h2>
+      <input id="input-nombre-perro" type="text" maxlength="30" placeholder="Nombre" autocomplete="off">
+      <p class="help">Lo usaremos para personalizar tu evaluación.</p>
+      <p id="error-nombre-perro" class="error hidden"></p>
+      <button class="btn-primary" onclick="handleContinuar()">Continuar</button>
+    </div>
+  </section>
+
+  <section id="view-cuestionario" class="view view-cuestionario hidden">
+    <div class="container narrow">
+      <header class="sticky-header">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <div class="progress-text">
+          <span id="bloque-indicador" class="bloque-indicador"></span>
+          <span id="progress-text"></span>
+        </div>
+      </header>
+      <h2 id="pregunta-enunciado" class="pregunta"></h2>
+      <div id="pregunta-opciones" class="opciones"></div>
+    </div>
+  </section>
+
+  <section id="view-transicion-bloque" class="view view-center hidden">
+    <div class="container narrow center">
+      <h2 id="transicion-titulo" class="display-sm"></h2>
+      <p id="transicion-sub" class="lead"></p>
+    </div>
+  </section>
+
+  <section id="view-cierre" class="view hidden">
+    <div class="container narrow">
+      <h2 id="cierre-titulo" class="display-sm"></h2>
+      <p id="cierre-sub" class="body"></p>
+      <button class="btn-primary" id="btn-ver-mapa" onclick="handleContinuar()"></button>
+    </div>
+  </section>
+
+  <section id="view-registro" class="view hidden">
+    <div class="container narrow">
+      <h2 class="display-sm">Tu evaluación está lista.</h2>
+      <p class="lead">Te la enviamos por email y la guardamos para que puedas volver.</p>
+
+      <label class="field">
+        <span>Email</span>
+        <input id="input-email" type="email" autocomplete="email" inputmode="email">
+      </label>
+
+      <label class="field">
+        <span>Tu nombre</span>
+        <input id="input-nombre-tutor" type="text" autocomplete="name">
+      </label>
+
+      <label class="field">
+        <span>Zona de Mallorca <em>(opcional)</em></span>
+        <input id="input-zona" type="text" list="zonas-mallorca" autocomplete="off">
+        <datalist id="zonas-mallorca">
+          <option value="Palma"></option>
+          <option value="Calvià"></option>
+          <option value="Andratx"></option>
+          <option value="Sóller"></option>
+          <option value="Inca"></option>
+          <option value="Manacor"></option>
+          <option value="Llucmajor"></option>
+          <option value="Marratxí"></option>
+          <option value="Santa Ponsa"></option>
+          <option value="Alcúdia"></option>
+          <option value="Pollença"></option>
+          <option value="Felanitx"></option>
+        </datalist>
+      </label>
+
+      <label class="checkbox">
+        <input id="input-rgpd" type="checkbox">
+        <span>Acepto recibir mi evaluación y novedades de Perros de la Isla.</span>
+      </label>
+
+      <p id="error-registro" class="error hidden"></p>
+      <button class="btn-primary" id="btn-enviar" onclick="handleRegistro()">Ver el mapa</button>
+    </div>
+  </section>
+
+  <section id="view-resultado" class="view hidden">
+    <div class="container">
+      <header class="resultado-header">
+        <h2 id="resultado-titulo" class="display"></h2>
+        <p class="lead">Así está tu perro hoy.</p>
+      </header>
+
+      <div class="charts">
+        <div class="chart-wrap"><canvas id="chart-barras"></canvas></div>
+        <div class="chart-wrap small"><canvas id="chart-torta"></canvas></div>
+      </div>
+
+      <div id="cards-dimensiones" class="cards"></div>
+
+      <div id="cta-final" class="cta-final">
+        <h3 id="cta-titulo"></h3>
+        <p id="cta-sub"></p>
+        <button class="btn-primary cta-btn" onclick="abrirCTA()">Reservar primera clase</button>
+      </div>
+
+      <footer class="footer">
+        <p id="footer-texto"></p>
+        <p class="firma">El equipo de Perros de la Isla</p>
+      </footer>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="app.js"></script>
+  <script>window.addEventListener('DOMContentLoaded', init);</script>
 </body>
 </html>
