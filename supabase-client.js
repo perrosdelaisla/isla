@@ -31,3 +31,18 @@ async function submitEvaluacion(payload) {
   const data = await res.json();
   return Array.isArray(data) ? data[0] : data;
 }
+
+async function submitEvaluacionClienteActivo(payload) {
+  const url = SUPA_URL + '/rest/v1/rpc/submit_evaluacion_cliente_activo';
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: SUPA_HEADERS,
+    body: JSON.stringify({ payload })
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error('Error al enviar la evaluación cliente activo (HTTP ' + res.status + '). ' + text);
+  }
+  const data = await res.json();
+  return Array.isArray(data) ? data[0] : data;
+}

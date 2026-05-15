@@ -30,6 +30,9 @@ const state = {
   indicePregunta: 0,
   nombrePerro: '',
   origen: 'directo',
+  perro_id: null,
+  cliente_id: null,
+  es_cliente_activo: false,
   respuestas: {},
   opcionElegidaIndex: {},
   resultado: null
@@ -41,6 +44,9 @@ let chartTorta = null;
 async function init() {
   const params = new URLSearchParams(window.location.search);
   state.origen = (params.get('origen') || 'directo').trim() || 'directo';
+  state.perro_id = params.get('perro_id') || null;
+  state.cliente_id = params.get('cliente_id') || null;
+  state.es_cliente_activo = !!(state.origen === 'cliente_activo' && state.perro_id && state.cliente_id);
 
   document.getElementById('btn-anterior-pregunta').onclick = retrocederPregunta;
   document.getElementById('btn-anterior-registro').onclick = function () {
@@ -53,11 +59,27 @@ async function init() {
       mostrarErrorFatal('No hay preguntas activas en este momento. Inténtalo más tarde.');
       return;
     }
+
+    if (state.es_cliente_activo) {
+      iniciarCuestionarioClienteActivo();
+      return;
+    }
+
     document.getElementById('loading').classList.add('hidden');
     showView('view-bienvenida');
   } catch (err) {
     mostrarErrorFatal(err.message || 'No pudimos cargar la evaluación.');
   }
+}
+
+function iniciarCuestionarioClienteActivo() {
+  state.nombrePerro = 'tu perro';
+  state.indicePregunta = 0;
+  state.respuestas = {};
+  state.opcionElegidaIndex = {};
+  document.getElementById('loading').classList.add('hidden');
+  showView('view-cuestionario');
+  renderPregunta();
 }
 
 function mostrarErrorFatal(msg) {
@@ -177,7 +199,11 @@ function avanzarPregunta() {
 
   if (idxSiguiente >= state.preguntas.length) {
     document.getElementById('progress-fill').style.width = '100%';
-    mostrarCierre();
+    if (state.es_cliente_activo) {
+      submitClienteActivo();
+    } else {
+      mostrarCierre();
+    }
     return;
   }
 
@@ -275,6 +301,33 @@ async function handleRegistro() {
   }
 }
 
+async function submitClienteActivo() {
+  const loadingEl = document.getElementById('loading');
+  document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+  loadingEl.innerHTML = '<p>Guardando evaluación…</p>';
+  loadingEl.classList.remove('hidden');
+
+  const payload = {
+    perro_id: state.perro_id,
+    cliente_id: state.cliente_id,
+    origen: 'cliente_activo',
+    respuestas: state.respuestas
+  };
+
+  try {
+    const resultado = await submitEvaluacionClienteActivo(payload);
+    state.resultado = resultado || {};
+    if (state.resultado.nombre_perro) {
+      state.nombrePerro = state.resultado.nombre_perro;
+    }
+    renderResultado();
+    showView('view-resultado');
+  } catch (err) {
+    console.error('[isla] error submit cliente activo:', err);
+    loadingEl.innerHTML = '<p class="error">No pudimos guardar la evaluación. Inténtalo de nuevo en unos segundos.</p>';
+  }
+}
+
 function lecturaPorScore(score) {
   const s = Number(score) || 0;
   if (s >= 75) return 'Tu perro está bien en esta área.';
@@ -288,8 +341,9 @@ function renderResultado() {
   const nombre = state.nombrePerro;
 
   document.getElementById('resultado-titulo').textContent = 'El mapa de ' + nombre;
-  document.getElementById('footer-texto').textContent =
-    'Te enviamos el mapa de ' + nombre + ' a tu email.';
+  document.getElementById('footer-texto').textContent = state.es_cliente_activo
+    ? 'Tu adiestrador ya recibió este mapa.'
+    : 'Te enviamos el mapa de ' + nombre + ' a tu email.';
 
   const scores = {
     fisica: Number(r.score_fisica) || 0,
@@ -332,14 +386,23 @@ function renderResultado() {
     cards.appendChild(card);
   });
 
-  const ctaTitulo = document.getElementById('cta-titulo');
-  const ctaSub = document.getElementById('cta-sub');
-  if (r.bandera_roja) {
-    ctaTitulo.textContent = 'Vimos algo que conviene tratar pronto.';
-    ctaSub.textContent = 'Reserva una primera clase con nosotros.';
+  const ctaFinal = document.getElementById('cta-final');
+  if (state.es_cliente_activo) {
+    ctaFinal.innerHTML =
+      '<div class="resultado-cta-cliente">' +
+        '<p class="resultado-cta-msg">Tu adiestrador ya tiene esta evaluación. La trabajarán juntos en la próxima clase.</p>' +
+        '<a href="https://perrosdelaisla.github.io/clases/" class="btn-primary cta-btn">Volver a la app</a>' +
+      '</div>';
   } else {
-    ctaTitulo.textContent = '¿Quieres mejorar la Isla de ' + nombre + '?';
-    ctaSub.textContent = 'En Perros de la Isla trabajamos exactamente lo que vimos hoy.';
+    const ctaTitulo = document.getElementById('cta-titulo');
+    const ctaSub = document.getElementById('cta-sub');
+    if (r.bandera_roja) {
+      ctaTitulo.textContent = 'Vimos algo que conviene tratar pronto.';
+      ctaSub.textContent = 'Reserva una primera clase con nosotros.';
+    } else {
+      ctaTitulo.textContent = '¿Quieres mejorar la Isla de ' + nombre + '?';
+      ctaSub.textContent = 'En Perros de la Isla trabajamos exactamente lo que vimos hoy.';
+    }
   }
 
   renderCharts(scores);
