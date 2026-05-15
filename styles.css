@@ -483,3 +483,27 @@ input[type=email]:focus {
     margin-bottom: 16px;
   }
 }
+
+/* ============================================================
+   Logo Diagnóstico SC — header de la view de resultado
+   ============================================================ */
+
+.resultado-header--con-logo {
+  text-align: center;
+}
+
+.resultado-logo {
+  display: block;
+  margin: 0 auto 12px;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+@media (max-width: 380px) {
+  .resultado-logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 8px;
+  }
+}
