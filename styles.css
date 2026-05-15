@@ -400,3 +400,66 @@ input[type=email]:focus {
   .charts { flex-direction: row; align-items: stretch; }
   .chart-wrap { flex: 1 1 0; height: 320px; }
 }
+
+.dev-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(180deg, rgba(232, 182, 45, 0.12) 0%, rgba(232, 182, 45, 0.08) 100%);
+  border-bottom: 1px solid rgba(232, 182, 45, 0.35);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  color: var(--pdli-negro, #1A1A1A);
+  line-height: 1.4;
+  position: relative;
+  z-index: 100;
+}
+
+.dev-banner[hidden] { display: none; }
+
+.dev-banner__icon {
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.dev-banner__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.dev-banner__text strong {
+  color: var(--pdli-rojo, #C8102E);
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+.dev-banner__close {
+  flex-shrink: 0;
+  background: transparent;
+  border: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--pdli-negro, #1A1A1A);
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 0.18s, background 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dev-banner__close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 480px) {
+  .dev-banner {
+    font-size: 0.78rem;
+    padding: 0.5rem 0.75rem;
+  }
+}

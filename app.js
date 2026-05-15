@@ -1,3 +1,19 @@
+(function initDevBanner() {
+  const banner = document.getElementById('dev-banner');
+  const closeBtn = document.getElementById('dev-banner-close');
+  if (!banner || !closeBtn) return;
+
+  if (sessionStorage.getItem('dev-banner-closed') === '1') {
+    banner.setAttribute('hidden', '');
+    return;
+  }
+
+  closeBtn.addEventListener('click', () => {
+    banner.setAttribute('hidden', '');
+    sessionStorage.setItem('dev-banner-closed', '1');
+  });
+})();
+
 const DIMENSIONES = ['fisica', 'emocional', 'social', 'cognitiva'];
 
 const DIM_INFO = {
