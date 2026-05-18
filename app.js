@@ -445,52 +445,70 @@ function renderRiego() {
   const info = DIM_INFO[dimId];
   const total = DIMENSIONES.length;
   const score = getScores()[dimId];
-  const regada = state.riegoRegada;
-  const nivel = regada ? levelFromScore(score).id : 0;
-  const esUltima = (state.riegoIndex + 1 === total);
+  const targetLevel = levelFromScore(score).id;
 
-  let html =
+  const html =
     '<div class="water-header">' +
       '<div class="eyebrow">Riego ' + (state.riegoIndex + 1) + ' de ' + total + '</div>' +
       '<h2 class="water-dim">' + info.label + '</h2>' +
       '<p class="water-intro">' + info.intro + '</p>' +
     '</div>' +
     '<div class="water-stage">' +
-      '<div style="position:relative;display:inline-block">' +
-        islaHTML(nivel, 'big') +
-        (regada ? scoreFloatHTML(score)
-                : '<div class="cup-wrap" id="cup-riego"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>') +
+      '<div class="riego-holder">' +
+        islaStackHTML(targetLevel) +
+        '<div class="cup-wrap" id="cup-riego"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>' +
+        '<div class="drops" id="drops-riego" aria-hidden="true"></div>' +
+        '<div class="score-float hidden" id="score-float">' +
+          '<div class="score-label">Puntaje</div>' +
+          '<div class="score-impact"><span id="score-num">0</span><span class="max"> / 100</span></div>' +
+        '</div>' +
       '</div>' +
+    '</div>' +
+    '<div class="water-foot" id="riego-foot">' +
+      '<div class="water-cta">Riega para descubrir</div>' +
+      '<div class="water-helper">Toca el vasito</div>' +
     '</div>';
 
-  if (regada) {
-    html +=
+  const body = document.getElementById('riego-body');
+  body.innerHTML = html;
+  body.querySelector('#cup-riego').addEventListener('click', regar);
+}
+
+/* Riega la isla actual: vuelca el vasito, caen gotas y la vegetación
+   crece de forma progresiva (capa por capa) hasta el nivel del puntaje. */
+function regar() {
+  if (state.riegoRegada) return;
+  state.riegoRegada = true;
+
+  const dimId = DIMENSIONES[state.riegoIndex];
+  const score = getScores()[dimId];
+  const targetLevel = levelFromScore(score).id;
+  const esUltima = (state.riegoIndex + 1 === DIMENSIONES.length);
+  const body = document.getElementById('riego-body');
+
+  const cup = body.querySelector('#cup-riego');
+  cup.classList.add('pour', 'disabled');
+  setTimeout(function () { cup.classList.add('spent'); }, 900);
+
+  spawnDrops(body.querySelector('#drops-riego'));
+
+  growStack(body.querySelector('.island-mask'), targetLevel, function () {
+    const sf = body.querySelector('#score-float');
+    sf.classList.remove('hidden');
+    sf.classList.add('revelado');
+    countUp(body.querySelector('#score-num'), score, 700);
+
+    const foot = body.querySelector('#riego-foot');
+    foot.innerHTML =
       '<div class="water-next-row">' +
         '<button type="button" class="water-next" id="btn-riego-next">' +
           (esUltima ? 'Ver las 4 islas' : 'Siguiente') +
           '<span class="arr" aria-hidden="true">→</span>' +
         '</button>' +
       '</div>';
-  } else {
-    html +=
-      '<div class="water-cta">Riega para descubrir</div>' +
-      '<div class="water-helper">Toca el vasito</div>';
-  }
-
-  const body = document.getElementById('riego-body');
-  body.innerHTML = html;
-
-  if (regada) {
-    body.querySelector('#btn-riego-next').addEventListener('click', avanzarRiego);
-  } else {
-    body.querySelector('#cup-riego').addEventListener('click', regarRiego);
-  }
-}
-
-function regarRiego() {
-  if (state.riegoRegada) return;
-  state.riegoRegada = true;
-  renderRiego();
+    foot.classList.add('fade-enter');
+    foot.querySelector('#btn-riego-next').addEventListener('click', avanzarRiego);
+  });
 }
 
 function avanzarRiego() {
@@ -503,13 +521,6 @@ function avanzarRiego() {
     renderMapa();
     showView('view-mapa');
   }
-}
-
-function scoreFloatHTML(score) {
-  return '<div class="score-float">' +
-           '<div class="score-label">Puntaje</div>' +
-           '<div class="score-impact">' + score + '<span class="max"> / 100</span></div>' +
-         '</div>';
 }
 
 /* ============================================================
@@ -593,53 +604,31 @@ function cerrarLectura() {
 
 function renderTotal() {
   const global = scoreGlobal();
-  const regado = state.totalRegado;
-  const nivelVine = regado ? levelFromScore(global).id : 0;
-  const critical = !!(state.resultado && state.resultado.bandera_roja);
+  const targetVine = levelFromScore(global).id;
   const nombre = state.nombrePerro || 'tu perro';
-
-  let stage =
-    '<div class="logo-wrap">' +
-      '<img class="logo-img" src="https://i.ibb.co/3YNrs9tM/Dise-o-con-cambio-de-negro-a-blanco.png" alt="Perros de la Isla">' +
-      '<div class="vine-layer">' + enredaderaImg(nivelVine) + '</div>' +
-      (regado ? '' : '<div class="cup-wrap" id="cup-total"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>') +
-    '</div>';
-
-  if (regado) {
-    stage +=
-      '<div class="total-score-row">' +
-        '<div class="total-score-label">Bienestar global</div>' +
-        '<div class="score-impact">' + global + '<span class="max"> / 100</span></div>' +
-      '</div>';
-  } else {
-    stage +=
-      '<div>' +
-        '<div class="water-cta">Riega el resultado</div>' +
-        '<div class="water-helper">Toca el vasito</div>' +
-      '</div>';
-  }
-
-  let foot = '';
-  if (regado) {
-    foot = renderTotalFoot(critical, nombre);
-  }
 
   const html =
     '<div class="total-head">' +
       '<div class="eyebrow">Tu resultado total</div>' +
       '<h2 class="total-title">' + nombre + ' · hoy</h2>' +
     '</div>' +
-    '<div class="total-stage">' + stage + '</div>' +
-    '<div class="total-foot">' + foot + '</div>';
+    '<div class="total-stage">' +
+      '<div class="logo-wrap">' +
+        '<img class="logo-img" src="https://i.ibb.co/3YNrs9tM/Dise-o-con-cambio-de-negro-a-blanco.png" alt="Perros de la Isla">' +
+        '<div class="vine-layer">' + enredaderaStackHTML(targetVine) + '</div>' +
+        '<div class="drops" id="drops-total" aria-hidden="true"></div>' +
+        '<div class="cup-wrap" id="cup-total"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>' +
+      '</div>' +
+      '<div class="total-reveal" id="total-reveal">' +
+        '<div class="water-cta">Riega el resultado</div>' +
+        '<div class="water-helper">Toca el vasito</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="total-foot" id="total-foot"></div>';
 
   const body = document.getElementById('total-body');
   body.innerHTML = html;
-
-  if (!regado) {
-    body.querySelector('#cup-total').addEventListener('click', regarTotal);
-  } else {
-    wireTotalFoot(body);
-  }
+  body.querySelector('#cup-total').addEventListener('click', regarTotal);
 }
 
 function renderTotalFoot(critical, nombre) {
@@ -700,10 +689,38 @@ function wireTotalFoot(body) {
   if (restart) restart.addEventListener('click', reiniciar);
 }
 
+/* Riega el Total: vuelca el vasito, caen gotas y la enredadera crece
+   alrededor del logo hasta el nivel del puntaje global. */
 function regarTotal() {
   if (state.totalRegado) return;
   state.totalRegado = true;
-  renderTotal();
+
+  const global = scoreGlobal();
+  const targetVine = levelFromScore(global).id;
+  const critical = !!(state.resultado && state.resultado.bandera_roja);
+  const nombre = state.nombrePerro || 'tu perro';
+  const body = document.getElementById('total-body');
+
+  const cup = body.querySelector('#cup-total');
+  cup.classList.add('pour', 'disabled');
+  setTimeout(function () { cup.classList.add('spent'); }, 900);
+
+  spawnDrops(body.querySelector('#drops-total'));
+
+  growStack(body.querySelector('.vine-layer'), targetVine, function () {
+    const reveal = body.querySelector('#total-reveal');
+    reveal.innerHTML =
+      '<div class="total-score-row fade-enter">' +
+        '<div class="total-score-label">Bienestar global</div>' +
+        '<div class="score-impact"><span id="total-score-num">0</span><span class="max"> / 100</span></div>' +
+      '</div>';
+    countUp(body.querySelector('#total-score-num'), global, 800);
+
+    const foot = body.querySelector('#total-foot');
+    foot.innerHTML = renderTotalFoot(critical, nombre);
+    foot.classList.add('fade-enter');
+    wireTotalFoot(foot);
+  });
 }
 
 function abrirCTA() {
@@ -777,23 +794,34 @@ function vegetacionImg(level) {
   return '<img class="veg-img" alt="" src="assets/vegetacion/isla-nivel-' + n + '.svg">';
 }
 
-/* <img> de la enredadera para un nivel — pantalla Total. */
-function enredaderaImg(level) {
-  const n = Math.max(0, Math.min(4, level | 0));
-  return '<img class="vine-img" alt="" src="assets/vegetacion/enredadera-nivel-' + n + '.svg">';
+/* Isla del riego — capas de vegetación 0..targetLevel apiladas, todas
+   registradas al mismo viewBox. La capa 0 (árida) arranca visible; las
+   demás se revelan en growStack() para que la vegetación parezca crecer.
+   Como los niveles son acumulativos, revelar la capa K muestra todo 0..K. */
+function islaStackHTML(targetLevel) {
+  const t = Math.max(0, Math.min(4, targetLevel | 0));
+  let capas = '';
+  for (let l = 0; l <= t; l++) {
+    capas += '<img class="veg-layer' + (l === 0 ? ' grown' : '') + '" ' +
+             'data-level="' + l + '" alt="" ' +
+             'src="assets/vegetacion/isla-nivel-' + l + '.svg">';
+  }
+  return '<div class="island-stage">' +
+           '<div class="island-mask">' + capas + '</div>' +
+           '<div class="island-outline"></div>' +
+         '</div>';
 }
 
-/* Isla: máscara de Mallorca + arte de vegetación + contorno. */
-function islaHTML(level, size) {
-  const big = size === 'big';
-  const stageCls = big ? 'island-stage' : 'mini-stage';
-  const maskCls  = big ? 'island-mask'  : 'mini-mask';
-  const outCls   = big ? 'island-outline' : 'mini-outline';
-
-  return '<div class="' + stageCls + '">' +
-           '<div class="' + maskCls + '">' + vegetacionImg(level) + '</div>' +
-           '<div class="' + outCls + '"></div>' +
-         '</div>';
+/* Enredadera del Total — mismas capas 0..targetLevel apiladas. */
+function enredaderaStackHTML(targetLevel) {
+  const t = Math.max(0, Math.min(4, targetLevel | 0));
+  let capas = '';
+  for (let l = 0; l <= t; l++) {
+    capas += '<img class="veg-layer' + (l === 0 ? ' grown' : '') + '" ' +
+             'data-level="' + l + '" alt="" ' +
+             'src="assets/vegetacion/enredadera-nivel-' + l + '.svg">';
+  }
+  return capas;
 }
 
 /* SVG del vasito de riego */
@@ -808,4 +836,58 @@ function cupSVG() {
     '<path d="M68 38 Q80 42 78 60 Q76 72 64 70" stroke="#1A1A1A" stroke-width="2.4" ' +
       'fill="none" stroke-linecap="round"/>' +
   '</svg>';
+}
+
+/* ============================================================
+   Animación de riego (Bloque 3)
+   ============================================================ */
+
+/* Revela las capas de vegetación 1..target de a una, escalonadas, para que
+   la isla/enredadera crezca de forma suave. La capa 0 ya está visible.
+   Llama onDone cuando termina el crecimiento. Ritmo: ~0.6 s (nivel bajo) a
+   ~1.5 s (nivel 4), dentro del rango de 1-2 s por isla. */
+function growStack(contenedor, targetLevel, onDone) {
+  const ESPERA = 460;   // ms — deja caer el agua antes de empezar a crecer
+  const PASO   = 200;   // ms entre niveles
+  const FADE   = 420;   // ms — coincide con la transición CSS de .veg-layer
+
+  for (let l = 1; l <= targetLevel; l++) {
+    const capa = contenedor.querySelector('.veg-layer[data-level="' + l + '"]');
+    setTimeout(function () {
+      if (capa) capa.classList.add('grown');
+    }, ESPERA + (l - 1) * PASO);
+  }
+
+  const fin = targetLevel >= 1
+    ? ESPERA + (targetLevel - 1) * PASO + FADE
+    : ESPERA + 160;
+  setTimeout(onDone, fin);
+}
+
+/* Gotas de agua cayendo desde el vasito hacia la isla. */
+function spawnDrops(contenedor) {
+  if (!contenedor) return;
+  contenedor.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const d = document.createElement('span');
+    d.className = 'drop';
+    d.style.left = (i % 3) * 11 + 'px';
+    d.style.animationDelay = (130 + i * 85) + 'ms';
+    contenedor.appendChild(d);
+  }
+  setTimeout(function () { contenedor.innerHTML = ''; }, 1700);
+}
+
+/* Conteo animado del puntaje, 0 → valor final, con easing suave. */
+function countUp(el, destino, duracion) {
+  if (!el) return;
+  const inicio = performance.now();
+  function tick(t) {
+    const k = Math.min(1, (t - inicio) / duracion);
+    const eased = 1 - Math.pow(1 - k, 3);
+    el.textContent = Math.round(destino * eased);
+    if (k < 1) requestAnimationFrame(tick);
+    else el.textContent = destino;
+  }
+  requestAnimationFrame(tick);
 }

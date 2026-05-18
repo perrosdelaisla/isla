@@ -572,10 +572,24 @@ img { display: block; }
   mix-blend-mode: multiply;
   pointer-events: none;
 }
-/* La vegetación es un <img> que carga un SVG de assets/vegetacion/.
-   El div contenedor le aplica la máscara de Mallorca. */
+/* La vegetación son uno o varios <img> de SVG de assets/vegetacion/.
+   El div contenedor le aplica la máscara de Mallorca. Las capas se apilan
+   absolutas y registradas para la animación de crecimiento (Bloque 3). */
 .island-mask img,
-.mini-mask img { width: 100%; height: 100%; display: block; }
+.mini-mask img,
+.vine-layer img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* Capa de un nivel de vegetación — oculta hasta que crece (growStack). */
+.veg-layer { opacity: 0; transition: opacity 0.42s ease; }
+.veg-layer.grown { opacity: 1; }
+
+/* ---------- Lienzo del riego (isla + vasito + gotas) ---------- */
+.riego-holder { position: relative; display: inline-block; }
 
 /* ---------- El vasito ---------- */
 .cup-wrap {
@@ -585,11 +599,12 @@ img { display: block; }
   width: 84px;
   height: 100px;
   cursor: pointer;
-  transition: transform 0.12s ease, opacity 0.2s ease;
+  transform-origin: 70% 88%;
+  transition: transform 0.1s ease, opacity 0.4s ease;
 }
 .cup-wrap svg { width: 100%; height: 100%; }
 .cup-wrap:active:not(.disabled) { transform: scale(0.96); }
-.cup-wrap.disabled { pointer-events: none; opacity: 0; }
+.cup-wrap.disabled { pointer-events: none; }
 .cup-wrap .tap-hint {
   position: absolute;
   top: -12px;
@@ -604,6 +619,41 @@ img { display: block; }
   animation: tapPulse 1.5s ease-in-out infinite;
 }
 @keyframes tapPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* Vuelco del vasito al regar (V1 — disparo por tap; el arrastre es V2) */
+.cup-wrap.pour { animation: cupPour 0.55s cubic-bezier(.45, .05, .5, .97) forwards; }
+.cup-wrap.pour .tap-hint { display: none; }
+.cup-wrap.spent { opacity: 0; }
+@keyframes cupPour {
+  to { transform: rotate(-70deg) translate(2px, -6px); }
+}
+
+/* ---------- Gotas de agua ---------- */
+.drops {
+  position: absolute;
+  top: 34px;
+  right: 30px;
+  width: 36px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 6;
+}
+.drop {
+  position: absolute;
+  top: 0;
+  width: 7px;
+  height: 10px;
+  background: #7BC4E8;
+  border-radius: 50% 50% 50% 50% / 60% 60% 42% 42%;
+  opacity: 0;
+  animation: dropFall 0.8s cubic-bezier(.4, .15, .7, 1) forwards;
+}
+@keyframes dropFall {
+  0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+  18%  { opacity: 1; }
+  80%  { opacity: 0.9; transform: translateY(116px) scale(1); }
+  100% { opacity: 0; transform: translateY(136px) scale(0.4); }
+}
 
 /* ---------- Número de puntaje ---------- */
 .score-impact {
@@ -625,7 +675,11 @@ img { display: block; }
   top: -56px;
   transform: translateX(-50%);
   text-align: center;
+  z-index: 7;
 }
+/* Aparición del puntaje — solo opacidad, para no pisar el translateX(-50%). */
+.score-float.revelado { animation: scoreIn 0.45s ease both; }
+@keyframes scoreIn { from { opacity: 0; } to { opacity: 1; } }
 .score-float .score-label {
   font-size: 10px;
   font-weight: 700;
@@ -820,8 +874,9 @@ img { display: block; }
   z-index: 3;
   pointer-events: none;
 }
-.vine-layer img { width: 100%; height: 100%; display: block; }
-.total-stage .cup-wrap { right: 2px; top: 18px; }
+/* El vasito del Total va POR DELANTE del logo y la enredadera (z-index 5
+   sobre vine-layer 3 y logo-img 2) — fix del bug de z-index del Bloque 1. */
+.total-stage .cup-wrap { right: 2px; top: 18px; z-index: 5; }
 
 .total-score-row { text-align: center; }
 .total-score-label {
