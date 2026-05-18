@@ -549,9 +549,8 @@ img { display: block; }
 }
 
 /* ---------- Lienzo de la isla ----------
-   Relación 340:280 — la misma del arte de vegetación (viewBox 340×280)
-   y de las máscaras de Mallorca (mallorca-filled/outline.png son 340×280).
-   Así el arte, la máscara y el contorno registran exacto. */
+   Relación 340:280 — la misma del viewBox del arte de vegetación
+   (los SVG son 340×280), para que el arte se vea sin deformar. */
 .island-stage {
   position: relative;
   width: 300px;
@@ -561,20 +560,16 @@ img { display: block; }
 .island-mask {
   position: absolute;
   inset: 0;
-  -webkit-mask: url("assets/mallorca-filled.png") center / contain no-repeat;
-          mask: url("assets/mallorca-filled.png") center / contain no-repeat;
 }
 .island-outline {
   position: absolute;
   inset: 0;
-  background: url("assets/mallorca-outline.png") center / contain no-repeat;
-  opacity: 0.7;
-  mix-blend-mode: multiply;
   pointer-events: none;
 }
 /* La vegetación son uno o varios <img> de SVG de assets/vegetacion/.
-   El div contenedor le aplica la máscara de Mallorca. Las capas se apilan
-   absolutas y registradas para la animación de crecimiento (Bloque 3). */
+   El arte nuevo trae la silueta de Mallorca y su contorno dentro del
+   propio SVG (ya no hay máscara ni contorno externos). Las capas se
+   apilan absolutas y registradas para la animación de crecimiento. */
 .island-mask img,
 .mini-mask img,
 .vine-layer img {
@@ -747,15 +742,10 @@ img { display: block; }
 .mini-mask {
   position: absolute;
   inset: 0;
-  -webkit-mask: url("assets/mallorca-filled.png") center / contain no-repeat;
-          mask: url("assets/mallorca-filled.png") center / contain no-repeat;
 }
 .mini-outline {
   position: absolute;
   inset: 0;
-  background: url("assets/mallorca-outline.png") center / contain no-repeat;
-  opacity: 0.75;
-  mix-blend-mode: multiply;
 }
 .mini-label {
   font-family: var(--pdi-font-display);

@@ -2,11 +2,10 @@
   <title>ENREDADERA · nivel 0 · Árido</title>
   
   <g stroke="#6B4A2E" stroke-width="2.2" fill="none" stroke-linecap="round">
-    <path d="M 145 288 Q 140 274 134 264 L 128 256"></path>
-    <path d="M 134 264 L 124 261"></path>
-    <path d="M 128 256 L 121 252"></path>
-    <path d="M 145 288 Q 150 276 156 268"></path>
-    <path d="M 156 268 L 162 265"></path>
-    <path d="M 145 288 L 145 296"></path>
+    <path d="M 165.0 258.3 Q 155.0 259.6 150.0 259.8 Q 145.0 260.0 140.0 259.8 Q 135.0 259.6 130.0 258.9 T 125.0 258.3" stroke="#6B4A2E" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+    <path d="M 145 260 L 138 268"></path>
+    <path d="M 138 268 L 130 270"></path>
+    <path d="M 145 260 L 153 268"></path>
+    <path d="M 153 268 L 161 270"></path>
   </g>
 </svg>
