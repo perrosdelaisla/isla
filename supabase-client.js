@@ -46,3 +46,25 @@ async function submitEvaluacionClienteActivo(payload) {
   const data = await res.json();
   return Array.isArray(data) ? data[0] : data;
 }
+
+async function getEvaluacion(token) {
+  const url = SUPA_URL + '/rest/v1/rpc/get_evaluacion_isla';
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: SUPA_HEADERS,
+    body: JSON.stringify({ token_input: token })
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    let tipoError = 'desconocido';
+    if (text.includes('P0002')) tipoError = 'no_encontrado';
+    else if (text.includes('P0003')) tipoError = 'expirado';
+    else if (text.includes('P0001')) tipoError = 'invalido';
+    else if (text.includes('P0004')) tipoError = 'borrado';
+    const err = new Error('Error al recuperar evaluación: ' + tipoError);
+    err.tipo = tipoError;
+    throw err;
+  }
+  const data = await res.json();
+  return Array.isArray(data) ? data[0] : data;
+}

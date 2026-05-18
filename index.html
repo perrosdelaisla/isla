@@ -3,149 +3,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perros de la Isla — Evaluación</title>
+  <title>Perros de la Isla — La isla de tu perro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="dev-banner" id="dev-banner" role="status" aria-live="polite">
-    <span class="dev-banner__icon" aria-hidden="true">⚙️</span>
-    <span class="dev-banner__text">
-      <strong>Versión en desarrollo.</strong> Esta es una primera versión funcional. Estamos puliendo detalles visuales y experiencia. ¡Gracias por probarla!
-    </span>
-    <button type="button" class="dev-banner__close" id="dev-banner-close" aria-label="Cerrar aviso">×</button>
-  </div>
+  <div id="app">
 
-  <div id="loading" class="view-loading">
-    <p>Cargando…</p>
-  </div>
-
-  <section id="view-bienvenida" class="view hidden">
-    <div class="container narrow">
-      <img class="isla-hero-logo" src="https://i.ibb.co/3YNrs9tM/Dise-o-con-cambio-de-negro-a-blanco.png" alt="" loading="eager" width="120" height="120">
-      <h1 class="display">Tu perro merece ser feliz hoy.</h1>
-      <p class="lead">Descubre cómo está tu perro en 4 minutos.</p>
-      <p class="body">Te haremos preguntas sobre cuatro áreas del bienestar de tu perro: cómo está físicamente, cómo gestiona sus emociones, cómo se relaciona, y cómo usa su cabeza. Al terminar te mostraremos un mapa con lo que vimos.</p>
-      <button class="btn-primary" onclick="handleContinuar()">Empezar evaluación</button>
+    <div class="dev-banner" id="dev-banner" role="status" aria-live="polite">
+      <span class="dev-banner__icon" aria-hidden="true">⚙️</span>
+      <span class="dev-banner__text">
+        <strong>Versión en desarrollo.</strong> Esta es una primera versión funcional. Estamos puliendo detalles visuales y experiencia. ¡Gracias por probarla!
+      </span>
+      <button type="button" class="dev-banner__close" id="dev-banner-close" aria-label="Cerrar aviso">×</button>
     </div>
-  </section>
 
-  <section id="view-nombre-perro" class="view hidden">
-    <div class="container narrow">
-      <h2 class="display-sm">Antes de empezar, ¿cómo se llama tu perro?</h2>
-      <input id="input-nombre-perro" type="text" maxlength="30" placeholder="Nombre" autocomplete="off">
-      <p class="help">Lo usaremos para personalizar tu evaluación.</p>
-      <p id="error-nombre-perro" class="error hidden"></p>
-      <button class="btn-primary" onclick="handleContinuar()">Continuar</button>
+    <!-- Logo de marca en esquina — visible en cuestionario / registro / riego / mapa -->
+    <div id="corner-logo" class="corner-logo hidden" aria-hidden="true" title="Perros de la Isla">
+      <img src="https://i.ibb.co/3YNrs9tM/Dise-o-con-cambio-de-negro-a-blanco.png" alt="" width="30" height="30">
     </div>
-  </section>
 
-  <section id="view-cuestionario" class="view view-cuestionario hidden">
-    <div class="container narrow">
-      <header class="sticky-header">
-        <button type="button" id="btn-anterior-pregunta" class="btn-anterior" hidden>← Anterior</button>
-        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
-        <div class="progress-text">
-          <span id="bloque-indicador" class="bloque-indicador"></span>
-          <span id="progress-text"></span>
+    <div id="loading" class="view-loading">
+      <p>Cargando…</p>
+    </div>
+
+    <!-- 1 · Intro -->
+    <section id="view-intro" class="view view-dark intro hidden">
+      <img class="intro-logo" src="https://i.ibb.co/3YNrs9tM/Dise-o-con-cambio-de-negro-a-blanco.png" alt="Perros de la Isla" loading="eager" width="78" height="78">
+      <div class="intro-brand">Perros de la Isla</div>
+      <div class="intro-tagline">Adiestramiento canino profesional</div>
+      <div class="intro-pre">te presenta</div>
+      <h1 class="intro-title">La isla de<br><em>tu perro</em></h1>
+      <p class="intro-body">
+        17 preguntas para descubrir cómo está tu perro en sus cuatro dimensiones:
+        física, emocional, social y cognitiva. Una primera mirada a su
+        <em>bienestar</em> y su <em>felicidad</em>.
+      </p>
+      <button type="button" class="btn-pill btn-crema" id="btn-empezar">Empezar</button>
+      <div class="intro-meta">17 preguntas · 5 min · gratis</div>
+    </section>
+
+    <!-- 2 · Cuestionario -->
+    <section id="view-cuestionario" class="view view-dark q-screen hidden">
+      <div class="q-progress-row">
+        <div class="q-progress-bar"><div id="progress-fill" class="q-progress-fill"></div></div>
+        <div class="q-progress-count">
+          <em id="progress-actual">01</em> / <span id="progress-total">17</span>
         </div>
-      </header>
-      <h2 id="pregunta-enunciado" class="pregunta"></h2>
-      <div id="pregunta-opciones" class="opciones"></div>
-    </div>
-  </section>
-
-  <section id="view-transicion-bloque" class="view view-center hidden">
-    <div class="container narrow center">
-      <h2 id="transicion-titulo" class="display-sm"></h2>
-      <p id="transicion-sub" class="lead"></p>
-    </div>
-  </section>
-
-  <section id="view-cierre" class="view hidden">
-    <div class="container narrow">
-      <h2 id="cierre-titulo" class="display-sm"></h2>
-      <p id="cierre-sub" class="body"></p>
-      <button class="btn-primary" id="btn-ver-mapa" onclick="handleContinuar()"></button>
-    </div>
-  </section>
-
-  <section id="view-registro" class="view hidden">
-    <div class="container narrow">
-      <button type="button" id="btn-anterior-registro" class="btn-anterior">← Anterior</button>
-      <h2 class="display-sm">Tu evaluación está lista.</h2>
-      <p class="lead">Te la enviamos por email y la guardamos para que puedas volver.</p>
-
-      <label class="field">
-        <span>Email</span>
-        <input id="input-email" type="email" autocomplete="email" inputmode="email">
-      </label>
-
-      <label class="field">
-        <span>Tu nombre</span>
-        <input id="input-nombre-tutor" type="text" autocomplete="name">
-      </label>
-
-      <label class="field">
-        <span>Zona de Mallorca <em>(opcional)</em></span>
-        <input id="input-zona" type="text" list="zonas-mallorca" autocomplete="off">
-        <datalist id="zonas-mallorca">
-          <option value="Palma"></option>
-          <option value="Calvià"></option>
-          <option value="Andratx"></option>
-          <option value="Sóller"></option>
-          <option value="Inca"></option>
-          <option value="Manacor"></option>
-          <option value="Llucmajor"></option>
-          <option value="Marratxí"></option>
-          <option value="Santa Ponsa"></option>
-          <option value="Alcúdia"></option>
-          <option value="Pollença"></option>
-          <option value="Felanitx"></option>
-        </datalist>
-      </label>
-
-      <label class="checkbox">
-        <input id="input-rgpd" type="checkbox">
-        <span>Acepto recibir mi evaluación y novedades de Perros de la Isla.</span>
-      </label>
-
-      <p id="error-registro" class="error hidden"></p>
-      <button class="btn-primary" id="btn-enviar" onclick="handleRegistro()">Ver el mapa</button>
-    </div>
-  </section>
-
-  <section id="view-resultado" class="view hidden">
-    <div class="container">
-      <header class="resultado-header resultado-header--con-logo">
-        <img class="resultado-logo" src="https://i.ibb.co/3YNrs9tM/Dise-o-con-cambio-de-negro-a-blanco.png" alt="" loading="eager" width="80" height="80">
-        <h2 id="resultado-titulo" class="display"></h2>
-        <p class="lead">Así está tu perro hoy.</p>
-      </header>
-
-      <div class="charts">
-        <div class="chart-wrap"><canvas id="chart-barras"></canvas></div>
-        <div class="chart-wrap small"><canvas id="chart-torta"></canvas></div>
       </div>
 
-      <div id="cards-dimensiones" class="cards"></div>
-
-      <div id="cta-final" class="cta-final">
-        <h3 id="cta-titulo"></h3>
-        <p id="cta-sub"></p>
-        <button class="btn-primary cta-btn" onclick="abrirCTA()">Reservar primera clase</button>
+      <div class="q-eyebrow-row">
+        <span class="q-dim-dot"></span>
+        <span class="eyebrow" id="dim-indicador"></span>
       </div>
 
-      <footer class="footer">
-        <p id="footer-texto"></p>
-        <p class="firma">El equipo de Perros de la Isla</p>
-      </footer>
-    </div>
-  </section>
+      <h2 id="pregunta-enunciado" class="q-text"></h2>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+      <div id="pregunta-opciones" class="q-options"></div>
+
+      <div class="q-foot">
+        <button type="button" id="btn-anterior" class="q-back">← Anterior</button>
+        <button type="button" id="btn-siguiente" class="q-next" disabled>Siguiente</button>
+      </div>
+    </section>
+
+    <!-- 3 · Registro -->
+    <section id="view-registro" class="view view-cream registro hidden">
+      <div class="registro-head">
+        <div class="eyebrow">Antes de ver los resultados</div>
+        <h2 class="registro-title">Te lo enviamos<br>por correo</h2>
+        <p class="registro-sub">
+          Guardamos tu evaluación y te llega un resumen a tu email. Te recuperamos
+          tu mapa cuando quieras durante los próximos 30 días.
+        </p>
+      </div>
+
+      <form class="registro-form" id="registro-form" novalidate>
+        <label class="reg-field" id="field-perro">
+          <span class="reg-lbl">Nombre del perro</span>
+          <input type="text" id="input-nombre-perro" placeholder="Luna" maxlength="30" autocomplete="off">
+        </label>
+
+        <label class="reg-field" id="field-tutor">
+          <span class="reg-lbl">Tu nombre</span>
+          <input type="text" id="input-nombre-tutor" placeholder="Tu nombre" autocomplete="name">
+        </label>
+
+        <label class="reg-field" id="field-email">
+          <span class="reg-lbl">Tu email</span>
+          <input type="email" id="input-email" placeholder="tu@email.com" autocomplete="email" inputmode="email">
+        </label>
+
+        <label class="reg-checkbox">
+          <input type="checkbox" id="input-rgpd">
+          <span>Acepto recibir mi evaluación y novedades de Perros de la Isla.</span>
+        </label>
+
+        <p id="error-registro" class="reg-error hidden"></p>
+
+        <button type="submit" class="btn-pill btn-negro registro-cta" id="btn-registro">Ver los resultados</button>
+
+        <p class="registro-fine">Los datos son necesarios para continuar. Nunca los compartimos.</p>
+      </form>
+    </section>
+
+    <!-- 4 · Riego (una pantalla por dimensión, contenido inyectado) -->
+    <section id="view-riego" class="view view-cream water-screen hidden">
+      <div id="riego-body" style="display:contents"></div>
+    </section>
+
+    <!-- 5 · Mapa (las 4 islas) -->
+    <section id="view-mapa" class="view view-cream overview-screen hidden">
+      <div id="mapa-body" style="display:contents"></div>
+    </section>
+
+    <!-- 6 · Total -->
+    <section id="view-total" class="view view-cream total-screen hidden">
+      <div id="total-body" style="display:contents"></div>
+    </section>
+
+  </div>
+
   <script src="supabase-client.js"></script>
   <script src="app.js"></script>
   <script>window.addEventListener('DOMContentLoaded', init);</script>
