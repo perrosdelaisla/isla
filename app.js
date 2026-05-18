@@ -58,7 +58,7 @@ const DIM_INFO = {
   }
 };
 
-/* Niveles de vegetación de la isla — placeholder Bloque 2 sustituye el arte */
+/* Niveles de vegetación de la isla — definen qué archivo SVG se carga */
 const LEVELS = [
   { id: 0, name: 'Árido',       min: 0,  max: 20  },
   { id: 1, name: 'Brotando',    min: 21, max: 40  },
@@ -457,7 +457,7 @@ function renderRiego() {
     '</div>' +
     '<div class="water-stage">' +
       '<div style="position:relative;display:inline-block">' +
-        islaHTML(nivel, 'big', true) +
+        islaHTML(nivel, 'big') +
         (regada ? scoreFloatHTML(score)
                 : '<div class="cup-wrap" id="cup-riego"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>') +
       '</div>' +
@@ -527,7 +527,7 @@ function renderMapa() {
     islas +=
       '<button type="button" class="mini-island" data-dim="' + d + '">' +
         '<div class="mini-stage">' +
-          '<div class="mini-mask">' + vegetacionSVG(nivel) + '</div>' +
+          '<div class="mini-mask">' + vegetacionImg(nivel) + '</div>' +
           '<div class="mini-outline"></div>' +
         '</div>' +
         '<div class="mini-label">' + info.label + '</div>' +
@@ -601,7 +601,7 @@ function renderTotal() {
   let stage =
     '<div class="logo-wrap">' +
       '<img class="logo-img" src="https://i.ibb.co/3YNrs9tM/Dise-o-con-cambio-de-negro-a-blanco.png" alt="Perros de la Isla">' +
-      '<div class="vine-layer">' + vineSVG(nivelVine) + '</div>' +
+      '<div class="vine-layer">' + enredaderaImg(nivelVine) + '</div>' +
       (regado ? '' : '<div class="cup-wrap" id="cup-total"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>') +
     '</div>';
 
@@ -763,157 +763,37 @@ function reiniciar() {
 }
 
 /* ============================================================
-   Placeholders de arte — vegetación, enredadera, vasito
-   El Bloque 2 sustituye estos SVG por el arte definitivo de PDLI.
+   Vegetación — se carga desde archivos SVG externos.
+   Arte definitivo de Claude Design en assets/vegetacion/:
+   isla-nivel-0..4.svg (viewBox 340×280) y
+   enredadera-nivel-0..4.svg (viewBox 290×290).
+   El vasito (cupSVG) sigue inline: no es vegetación.
    ============================================================ */
 
-/* Isla con vegetación: 0 árida ··· 4 plena */
-function islaHTML(level, size, showBadge) {
+/* <img> de la isla para un nivel (0 árida ··· 4 plena). Vive dentro de un
+   div con la máscara de Mallorca, que lo recorta a la silueta de la isla. */
+function vegetacionImg(level) {
+  const n = Math.max(0, Math.min(4, level | 0));
+  return '<img class="veg-img" alt="" src="assets/vegetacion/isla-nivel-' + n + '.svg">';
+}
+
+/* <img> de la enredadera para un nivel — pantalla Total. */
+function enredaderaImg(level) {
+  const n = Math.max(0, Math.min(4, level | 0));
+  return '<img class="vine-img" alt="" src="assets/vegetacion/enredadera-nivel-' + n + '.svg">';
+}
+
+/* Isla: máscara de Mallorca + arte de vegetación + contorno. */
+function islaHTML(level, size) {
   const big = size === 'big';
   const stageCls = big ? 'island-stage' : 'mini-stage';
   const maskCls  = big ? 'island-mask'  : 'mini-mask';
   const outCls   = big ? 'island-outline' : 'mini-outline';
 
-  let badge = '';
-  if (showBadge && big) {
-    const lv = LEVELS[level] || LEVELS[0];
-    badge = '<div class="vlevel-badge">NV <em>' + String(level).padStart(2, '0') +
-            '</em> · ' + lv.name + ' · placeholder</div>';
-  }
-
   return '<div class="' + stageCls + '">' +
-           '<div class="' + maskCls + '">' + vegetacionSVG(level) + '</div>' +
+           '<div class="' + maskCls + '">' + vegetacionImg(level) + '</div>' +
            '<div class="' + outCls + '"></div>' +
-           badge +
          '</div>';
-}
-
-/* SVG de vegetación — placeholder pintado por niveles */
-function vegetacionSVG(level) {
-  level = Math.max(0, Math.min(4, level | 0));
-  const base = ['#D9C39A', '#CDBC86', '#B3B96E', '#97AE54', '#7E9F40'][level];
-  const parts = ['<rect width="348" height="262" fill="' + base + '"/>'];
-
-  /* Nivel 0 — tierra agrietada */
-  if (level === 0) {
-    parts.push(
-      '<g stroke="#8A6A45" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5">' +
-        '<path d="M70 96 L112 132 L142 126"/>' +
-        '<path d="M196 88 L228 124"/>' +
-        '<path d="M232 176 L262 208 L250 230"/>' +
-        '<path d="M104 200 L140 218"/>' +
-      '</g>'
-    );
-  }
-
-  /* Manchas de verde — crecen con el nivel */
-  const foliage = [
-    [82, 92, 32], [196, 120, 42], [270, 94, 30], [126, 188, 36],
-    [244, 202, 34], [58, 152, 26], [308, 162, 24], [164, 60, 22], [214, 232, 26]
-  ];
-  const nFol = [0, 3, 5, 7, 9][level];
-  const folColor = ['#6E863F', '#62803A', '#577434', '#4E6A2E', '#456026'][level];
-  let fg = '';
-  for (let i = 0; i < nFol; i++) {
-    const f = foliage[i];
-    fg += '<circle cx="' + f[0] + '" cy="' + f[1] + '" r="' + f[2] + '" fill="' + folColor + '" opacity="0.92"/>';
-  }
-  if (fg) parts.push('<g>' + fg + '</g>');
-
-  /* Flores — desde nivel 2 */
-  if (level >= 2) {
-    const flowers = [
-      [96, 110, '#E8753D'], [188, 92, '#F2C84B'], [238, 184, '#D9446E'],
-      [128, 168, '#F2C84B'], [262, 110, '#E8753D'], [78, 188, '#D9446E'],
-      [206, 230, '#F2C84B'], [150, 232, '#E8753D']
-    ];
-    const nFlo = [0, 0, 3, 6, 8][level];
-    let fl = '';
-    for (let j = 0; j < nFlo; j++) {
-      const w = flowers[j];
-      fl += '<g transform="translate(' + w[0] + ' ' + w[1] + ')">' +
-            '<circle r="5" fill="' + w[2] + '"/><circle r="2" fill="#FFF7DC"/></g>';
-    }
-    parts.push('<g>' + fl + '</g>');
-  }
-
-  /* Arbolitos — desde nivel 3 */
-  if (level >= 3) {
-    const trees = level === 3
-      ? [[108, 138], [224, 172]]
-      : [[102, 138], [168, 130], [236, 168], [284, 150]];
-    let tr = '';
-    for (let k = 0; k < trees.length; k++) {
-      const t = trees[k];
-      tr += '<g transform="translate(' + t[0] + ' ' + t[1] + ')">' +
-              '<rect x="-3" y="0" width="6" height="16" rx="2" fill="#5A3E22"/>' +
-              '<circle cx="-8" cy="-7" r="12" fill="#2E4A18"/>' +
-              '<circle cx="7" cy="-9" r="11" fill="#3A5C20"/>' +
-              '<circle cx="-2" cy="-15" r="10" fill="#2E4A18"/>' +
-            '</g>';
-    }
-    parts.push('<g>' + tr + '</g>');
-  }
-
-  return '<svg viewBox="0 0 348 262" preserveAspectRatio="none">' + parts.join('') + '</svg>';
-}
-
-/* SVG de enredadera alrededor del logo — placeholder por niveles */
-function vineSVG(level) {
-  level = Math.max(0, Math.min(4, level | 0));
-  const p = [];
-
-  if (level === 0) {
-    p.push('<g stroke="#8A6A45" stroke-width="2" fill="none" stroke-linecap="round">' +
-           '<path d="M145 286 Q140 272 133 262"/>' +
-           '<path d="M145 286 Q151 273 158 265"/></g>');
-  }
-  if (level >= 1) {
-    p.push('<path d="M145 288 Q116 250 95 212" stroke="#5C7A33" stroke-width="3.4" fill="none" stroke-linecap="round"/>');
-    p.push('<path d="M145 288 Q174 250 195 212" stroke="#5C7A33" stroke-width="3.4" fill="none" stroke-linecap="round"/>');
-  }
-  if (level >= 2) {
-    p.push('<path d="M95 212 Q68 174 60 126" stroke="#4E6A2E" stroke-width="3.4" fill="none" stroke-linecap="round"/>');
-    p.push('<path d="M195 212 Q222 174 230 126" stroke="#4E6A2E" stroke-width="3.4" fill="none" stroke-linecap="round"/>');
-  }
-  if (level >= 3) {
-    p.push('<path d="M60 126 Q55 82 90 48" stroke="#3E5C24" stroke-width="3.4" fill="none" stroke-linecap="round"/>');
-    p.push('<path d="M230 126 Q235 82 200 48" stroke="#3E5C24" stroke-width="3.4" fill="none" stroke-linecap="round"/>');
-  }
-  if (level >= 4) {
-    p.push('<path d="M90 48 Q145 22 200 48" stroke="#2F4A18" stroke-width="3.6" fill="none" stroke-linecap="round"/>');
-  }
-
-  const leaves = [
-    [102, 224, -28], [188, 224, 28], [66, 176, -58], [224, 176, 58],
-    [58, 116, -86], [232, 116, 86], [92, 56, -116], [198, 56, 116],
-    [126, 30, -12], [164, 30, 12]
-  ];
-  const nLeaf = [0, 2, 4, 6, 10][level];
-  let lv = '';
-  for (let i = 0; i < nLeaf; i++) {
-    const L = leaves[i];
-    lv += '<g transform="translate(' + L[0] + ' ' + L[1] + ') rotate(' + L[2] + ')">' +
-          '<ellipse rx="8" ry="3.6" fill="#4E6A2E"/></g>';
-  }
-  if (lv) p.push('<g>' + lv + '</g>');
-
-  if (level >= 3) {
-    const flowers = [
-      [70, 150, '#E8753D'], [220, 150, '#F2C84B'], [78, 86, '#D9446E'],
-      [212, 86, '#F2C84B'], [120, 34, '#E8753D'], [170, 34, '#D9446E'], [145, 250, '#F2C84B']
-    ];
-    const nFlo = level === 3 ? 3 : 7;
-    let fl = '';
-    for (let j = 0; j < nFlo; j++) {
-      const F = flowers[j];
-      fl += '<g transform="translate(' + F[0] + ' ' + F[1] + ')">' +
-            '<circle r="5" fill="' + F[2] + '"/><circle r="2" fill="#FFF7DC"/></g>';
-    }
-    p.push('<g>' + fl + '</g>');
-  }
-
-  return '<svg viewBox="0 0 290 290" preserveAspectRatio="xMidYMid meet">' + p.join('') + '</svg>';
 }
 
 /* SVG del vasito de riego */

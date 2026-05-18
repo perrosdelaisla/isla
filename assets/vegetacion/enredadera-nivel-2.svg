@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290" preserveAspectRatio="xMidYMid meet">
+  <title>ENREDADERA · nivel 2 · Creciendo</title>
+  
+  <path d="M 145 288 Q 126 256 108 238 Q 92 222 86 215" stroke="#6E9E45" stroke-width="3" fill="none" stroke-linecap="round"></path>
+  <path d="M 145 288 Q 164 256 182 238 Q 198 222 204 215" stroke="#6E9E45" stroke-width="3" fill="none" stroke-linecap="round"></path>
+  <path d="M 145 288 Q 140 270 132 256" stroke="#3F6B2E" stroke-width="2" fill="none" stroke-linecap="round"></path>
+  <path d="M 145 288 Q 150 270 158 256" stroke="#3F6B2E" stroke-width="2" fill="none" stroke-linecap="round"></path>
+  <g transform="translate(108,232) rotate(-55)">
+    <path d="M 0 0 C -4.18 -2.75, -3.5529999999999995 -8.25, 0 -11&#xA;             C 3.5529999999999995 -8.25, 4.18 -2.75, 0 0 Z" fill="#6E9E45"></path>
+    <line x1="0" y1="-2" x2="0" y2="-10" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(122,250) rotate(-30)">
+    <path d="M 0 0 C -3.42 -2.25, -2.907 -6.75, 0 -9&#xA;             C 2.907 -6.75, 3.42 -2.25, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-8" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(98,222) rotate(-75)">
+    <path d="M 0 0 C -3.42 -2.25, -2.907 -6.75, 0 -9&#xA;             C 2.907 -6.75, 3.42 -2.25, 0 0 Z" fill="#3F6B2E"></path>
+    <line x1="0" y1="-2" x2="0" y2="-8" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(182,234) rotate(55)">
+    <path d="M 0 0 C -4.18 -2.75, -3.5529999999999995 -8.25, 0 -11&#xA;             C 3.5529999999999995 -8.25, 4.18 -2.75, 0 0 Z" fill="#6E9E45"></path>
+    <line x1="0" y1="-2" x2="0" y2="-10" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(168,252) rotate(30)">
+    <path d="M 0 0 C -3.42 -2.25, -2.907 -6.75, 0 -9&#xA;             C 2.907 -6.75, 3.42 -2.25, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-8" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(192,222) rotate(75)">
+    <path d="M 0 0 C -3.42 -2.25, -2.907 -6.75, 0 -9&#xA;             C 2.907 -6.75, 3.42 -2.25, 0 0 Z" fill="#3F6B2E"></path>
+    <line x1="0" y1="-2" x2="0" y2="-8" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(132,268) rotate(-10)">
+    <path d="M 0 0 C -3.04 -2, -2.584 -6, 0 -8&#xA;             C 2.584 -6, 3.04 -2, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-7" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(158,268) rotate(10)">
+    <path d="M 0 0 C -3.04 -2, -2.584 -6, 0 -8&#xA;             C 2.584 -6, 3.04 -2, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-7" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(140,278) rotate(-5)">
+    <path d="M 0 0 C -2.66 -1.75, -2.261 -5.25, 0 -7&#xA;             C 2.261 -5.25, 2.66 -1.75, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-6" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(150,278) rotate(5)">
+    <path d="M 0 0 C -2.66 -1.75, -2.261 -5.25, 0 -7&#xA;             C 2.261 -5.25, 2.66 -1.75, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-6" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+
+  <path d="M 86 215 Q 68 188 58 150" stroke="#3F6B2E" stroke-width="3.2" fill="none" stroke-linecap="round"></path>
+  <path d="M 204 215 Q 222 188 232 150" stroke="#3F6B2E" stroke-width="3.2" fill="none" stroke-linecap="round"></path>
+  <path d="M 68 188 Q 54 180 46 175" stroke="#6E9E45" stroke-width="1.9" fill="none" stroke-linecap="round"></path>
+  <path d="M 222 188 Q 236 180 244 175" stroke="#6E9E45" stroke-width="1.9" fill="none" stroke-linecap="round"></path>
+  <path d="M 58 150 Q 48 140 42 138" stroke="#6E9E45" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  <path d="M 232 150 Q 242 140 248 138" stroke="#6E9E45" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+  <g transform="translate(70,188) rotate(-75)">
+    <path d="M 0 0 C -4.5600000000000005 -3, -3.8760000000000003 -9, 0 -12&#xA;             C 3.8760000000000003 -9, 4.5600000000000005 -3, 0 0 Z" fill="#6E9E45"></path>
+    <line x1="0" y1="-2" x2="0" y2="-11" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(58,168) rotate(-90)">
+    <path d="M 0 0 C -4.18 -2.75, -3.5529999999999995 -8.25, 0 -11&#xA;             C 3.5529999999999995 -8.25, 4.18 -2.75, 0 0 Z" fill="#3F6B2E"></path>
+    <line x1="0" y1="-2" x2="0" y2="-10" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(56,148) rotate(-105)">
+    <path d="M 0 0 C -4.5600000000000005 -3, -3.8760000000000003 -9, 0 -12&#xA;             C 3.8760000000000003 -9, 4.5600000000000005 -3, 0 0 Z" fill="#6E9E45"></path>
+    <line x1="0" y1="-2" x2="0" y2="-11" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(45,175) rotate(-100)">
+    <path d="M 0 0 C -3.8 -2.5, -3.23 -7.5, 0 -10&#xA;             C 3.23 -7.5, 3.8 -2.5, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-9" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(40,140) rotate(-115)">
+    <path d="M 0 0 C -3.42 -2.25, -2.907 -6.75, 0 -9&#xA;             C 2.907 -6.75, 3.42 -2.25, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-8" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(218,188) rotate(75)">
+    <path d="M 0 0 C -4.5600000000000005 -3, -3.8760000000000003 -9, 0 -12&#xA;             C 3.8760000000000003 -9, 4.5600000000000005 -3, 0 0 Z" fill="#6E9E45"></path>
+    <line x1="0" y1="-2" x2="0" y2="-11" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(232,168) rotate(90)">
+    <path d="M 0 0 C -4.18 -2.75, -3.5529999999999995 -8.25, 0 -11&#xA;             C 3.5529999999999995 -8.25, 4.18 -2.75, 0 0 Z" fill="#3F6B2E"></path>
+    <line x1="0" y1="-2" x2="0" y2="-10" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(234,148) rotate(105)">
+    <path d="M 0 0 C -4.5600000000000005 -3, -3.8760000000000003 -9, 0 -12&#xA;             C 3.8760000000000003 -9, 4.5600000000000005 -3, 0 0 Z" fill="#6E9E45"></path>
+    <line x1="0" y1="-2" x2="0" y2="-11" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(245,175) rotate(100)">
+    <path d="M 0 0 C -3.8 -2.5, -3.23 -7.5, 0 -10&#xA;             C 3.23 -7.5, 3.8 -2.5, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-9" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(250,140) rotate(115)">
+    <path d="M 0 0 C -3.42 -2.25, -2.907 -6.75, 0 -9&#xA;             C 2.907 -6.75, 3.42 -2.25, 0 0 Z" fill="#9CC368"></path>
+    <line x1="0" y1="-2" x2="0" y2="-8" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(95,208) rotate(-50)">
+    <path d="M 0 0 C -3.8 -2.5, -3.23 -7.5, 0 -10&#xA;             C 3.23 -7.5, 3.8 -2.5, 0 0 Z" fill="#6E9E45"></path>
+    <line x1="0" y1="-2" x2="0" y2="-9" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(196,210) rotate(50)">
+    <path d="M 0 0 C -3.8 -2.5, -3.23 -7.5, 0 -10&#xA;             C 3.23 -7.5, 3.8 -2.5, 0 0 Z" fill="#6E9E45"></path>
+    <line x1="0" y1="-2" x2="0" y2="-9" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(74,200) rotate(-68)">
+    <path d="M 0 0 C -3.04 -2, -2.584 -6, 0 -8&#xA;             C 2.584 -6, 3.04 -2, 0 0 Z" fill="#3F6B2E"></path>
+    <line x1="0" y1="-2" x2="0" y2="-7" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+  <g transform="translate(216,202) rotate(68)">
+    <path d="M 0 0 C -3.04 -2, -2.584 -6, 0 -8&#xA;             C 2.584 -6, 3.04 -2, 0 0 Z" fill="#3F6B2E"></path>
+    <line x1="0" y1="-2" x2="0" y2="-7" stroke="#2A4A1A" stroke-width="0.6" opacity="0.5"></line>
+  </g>
+
+</svg>

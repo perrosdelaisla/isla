@@ -548,11 +548,14 @@ img { display: block; }
   line-height: 1;
 }
 
-/* ---------- Lienzo de la isla ---------- */
+/* ---------- Lienzo de la isla ----------
+   Relación 340:280 — la misma del arte de vegetación (viewBox 340×280)
+   y de las máscaras de Mallorca (mallorca-filled/outline.png son 340×280).
+   Así el arte, la máscara y el contorno registran exacto. */
 .island-stage {
   position: relative;
   width: 300px;
-  height: 226px;
+  height: 247px;
   filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.10));
 }
 .island-mask {
@@ -569,28 +572,10 @@ img { display: block; }
   mix-blend-mode: multiply;
   pointer-events: none;
 }
-.island-mask svg,
-.mini-mask svg { width: 100%; height: 100%; display: block; }
-
-/* Marca de placeholder de vegetación — se retira en el Bloque 2 */
-.vlevel-badge {
-  position: absolute;
-  bottom: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--pdi-font-body);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2.2px;
-  text-transform: uppercase;
-  color: var(--pdi-ink-muted);
-  background: var(--pdi-crema);
-  padding: 4px 10px;
-  border-radius: 4px;
-  white-space: nowrap;
-  border: 1px dashed rgba(0, 0, 0, 0.18);
-}
-.vlevel-badge em { font-style: normal; color: var(--pdi-rojo); }
+/* La vegetación es un <img> que carga un SVG de assets/vegetacion/.
+   El div contenedor le aplica la máscara de Mallorca. */
+.island-mask img,
+.mini-mask img { width: 100%; height: 100%; display: block; }
 
 /* ---------- El vasito ---------- */
 .cup-wrap {
@@ -704,7 +689,7 @@ img { display: block; }
   transition: background 0.15s ease;
 }
 .mini-island:active { background: rgba(0, 0, 0, 0.04); }
-.mini-stage { position: relative; width: 136px; height: 102px; }
+.mini-stage { position: relative; width: 136px; height: 112px; }
 .mini-mask {
   position: absolute;
   inset: 0;
@@ -835,7 +820,7 @@ img { display: block; }
   z-index: 3;
   pointer-events: none;
 }
-.vine-layer svg { width: 100%; height: 100%; display: block; }
+.vine-layer img { width: 100%; height: 100%; display: block; }
 .total-stage .cup-wrap { right: 2px; top: 18px; }
 
 .total-score-row { text-align: center; }
@@ -999,8 +984,8 @@ img { display: block; }
   .intro-title { font-size: 40px; }
   .water-dim { font-size: 40px; }
   .score-impact { font-size: 100px; }
-  .island-stage { width: 264px; height: 199px; }
-  .mini-stage { width: 120px; height: 90px; }
+  .island-stage { width: 264px; height: 217px; }
+  .mini-stage { width: 120px; height: 99px; }
   .dev-banner { font-size: 0.78rem; padding: 0.5rem 0.75rem; }
 }
 

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 280" preserveAspectRatio="xMidYMid meet">
+  <title>ISLA · vegetación · nivel 0 · Árido</title>
+  
+  <rect width="340" height="280" fill="#C9B68C"></rect>
+  <g stroke="#7A6440" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.5">
+    <path d="M 55 95 Q 80 110 105 120 Q 122 124 135 118"></path>
+    <path d="M 135 118 L 158 138 L 148 165"></path>
+    <path d="M 170 78 L 192 108 L 210 114"></path>
+    <path d="M 210 114 L 240 142 L 235 172"></path>
+    <path d="M 78 195 Q 108 210 132 205"></path>
+    <path d="M 198 200 L 226 218 L 218 240"></path>
+    <path d="M 96 50 Q 110 65 122 75"></path>
+    <path d="M 246 75 L 260 88"></path>
+    <path d="M 165 235 Q 180 245 200 245"></path>
+  </g>
+  <ellipse cx="88" cy="158" rx="3" ry="2" fill="#9C8862" transform="rotate(15 88 158)"></ellipse>
+  <ellipse cx="180" cy="178" rx="2.6" ry="1.9" fill="#9C8862" transform="rotate(-10 180 178)"></ellipse>
+  <ellipse cx="245" cy="124" rx="3.2" ry="2.2" fill="#9C8862" transform="rotate(25 245 124)"></ellipse>
+  <ellipse cx="138" cy="222" rx="3.6" ry="2.4" fill="#9C8862" transform="rotate(-5 138 222)"></ellipse>
+  <ellipse cx="115" cy="102" rx="2.4" ry="1.7" fill="#9C8862" transform="rotate(30 115 102)"></ellipse>
+  <ellipse cx="212" cy="158" rx="2.8" ry="2" fill="#9C8862" transform="rotate(0 212 158)"></ellipse>
+  <ellipse cx="72" cy="220" rx="2.6" ry="1.9" fill="#9C8862" transform="rotate(20 72 220)"></ellipse>
+
+</svg>
