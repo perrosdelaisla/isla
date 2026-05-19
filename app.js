@@ -87,6 +87,7 @@ const state = {
   resultado: null,
   riegoIndex: 0,
   riegoRegada: false,
+  riegoGrupos: null,
   totalRegado: false,
   openDim: null
 };
@@ -455,8 +456,11 @@ function renderRiego() {
     '</div>' +
     '<div class="water-stage">' +
       '<div class="riego-holder">' +
-        islaStackHTML(targetLevel) +
-        '<div class="cup-wrap" id="cup-riego"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>' +
+        '<div class="island-stage">' +
+          '<div class="island-mask" id="isla-svg"></div>' +
+          '<div class="island-outline"></div>' +
+        '</div>' +
+        '<div class="cup-wrap disabled" id="cup-riego"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>' +
         '<div class="drops" id="drops-riego" aria-hidden="true"></div>' +
         '<div class="score-float hidden" id="score-float">' +
           '<div class="score-label">Puntaje</div>' +
@@ -471,18 +475,76 @@ function renderRiego() {
 
   const body = document.getElementById('riego-body');
   body.innerHTML = html;
-  body.querySelector('#cup-riego').addEventListener('click', regar);
+  state.riegoGrupos = null;
+  cargarIslaSVG(targetLevel, body);
 }
 
-/* Riega la isla actual: vuelca el vasito, caen gotas y la vegetación
-   crece de forma progresiva (capa por capa) hasta el nivel del puntaje. */
+/* Carga el SVG del nivel objetivo INLINE dentro de .island-mask, deja la
+   vegetación en estado árido (scale 0) y habilita el vasito. */
+function cargarIslaSVG(targetLevel, body) {
+  const cont = body.querySelector('#isla-svg');
+  const cup = body.querySelector('#cup-riego');
+  const habilitar = function () {
+    cup.classList.remove('disabled');
+    cup.addEventListener('click', regar);
+  };
+
+  fetch('assets/vegetacion/isla-nivel-' + targetLevel + '.svg')
+    .then(function (r) { return r.text(); })
+    .then(function (txt) {
+      cont.innerHTML = txt;
+      const svg = cont.querySelector('svg');
+      const grupos = svg ? vegElementos(svg) : [];
+      /* Estado inicial árido: la vegetación arranca colapsada (scale 0). */
+      grupos.forEach(function (g) {
+        g.el.setAttribute('transform', g.orig + ' scale(0)');
+      });
+      state.riegoGrupos = grupos;
+      habilitar();
+    })
+    .catch(function () {
+      /* Fallback improbable (fetch falla): isla estática, sin cascada. */
+      cont.innerHTML = vegetacionImg(targetLevel);
+      state.riegoGrupos = [];
+      habilitar();
+    });
+}
+
+/* Grupos de vegetación animables: <g id> HOJA (sin <g id> dentro), con
+   translate, que no sean terreno. Los contenedores y el terreno se saltan. */
+function vegElementos(svg) {
+  const TERRENO = /^(terreno|sombra-isla|textura-suelo|piedras)/;
+  return Array.from(svg.querySelectorAll('g[id]')).filter(function (g) {
+    if (TERRENO.test(g.id)) return false;
+    const tr = g.getAttribute('transform') || '';
+    if (tr.indexOf('translate') === -1) return false;
+    if (g.querySelector('g[id]')) return false;        // es un contenedor
+    return true;
+  }).map(function (g) {
+    const tr = g.getAttribute('transform');
+    const m = tr.match(/translate\(\s*-?[\d.]+[ ,]+(-?[\d.]+)/);
+    return { el: g, orig: tr, y: m ? parseFloat(m[1]) : 140, tipo: tipoVeg(g.id), listo: false };
+  });
+}
+
+/* Tipo de vegetación según el prefijo del id — define cómo se anima. */
+function tipoVeg(id) {
+  if (id.indexOf('arbol') === 0) return 'arbol';
+  if (id.indexOf('arbusto') === 0) return 'arbusto';
+  if (id.indexOf('helecho') === 0) return 'helecho';
+  if (id.indexOf('flor') === 0 || id.indexOf('capullo') === 0) return 'flor';
+  if (id.indexOf('hierba') === 0 || id.indexOf('brote') === 0) return 'hierba';
+  return 'cobertura';   // m-* y cualquier otro
+}
+
+/* Riega la isla: vuelca el vasito, caen gotas y la vegetación FLORECE en
+   cascada — elemento por elemento, en una onda que sube por la isla. */
 function regar() {
   if (state.riegoRegada) return;
   state.riegoRegada = true;
 
   const dimId = DIMENSIONES[state.riegoIndex];
   const score = getScores()[dimId];
-  const targetLevel = levelFromScore(score).id;
   const esUltima = (state.riegoIndex + 1 === DIMENSIONES.length);
   const body = document.getElementById('riego-body');
 
@@ -492,23 +554,96 @@ function regar() {
 
   spawnDrops(body.querySelector('#drops-riego'));
 
-  growStack(body.querySelector('.island-mask'), targetLevel, function () {
-    const sf = body.querySelector('#score-float');
-    sf.classList.remove('hidden');
-    sf.classList.add('revelado');
-    countUp(body.querySelector('#score-num'), score, 700);
+  /* La floración arranca cuando el agua "cae" (~460ms). */
+  setTimeout(function () {
+    cascadaFloracion(state.riegoGrupos || [], function () {
+      const sf = body.querySelector('#score-float');
+      sf.classList.remove('hidden');
+      sf.classList.add('revelado');
+      countUp(body.querySelector('#score-num'), score, 700);
 
-    const foot = body.querySelector('#riego-foot');
-    foot.innerHTML =
-      '<div class="water-next-row">' +
-        '<button type="button" class="water-next" id="btn-riego-next">' +
-          (esUltima ? 'Ver las 4 islas' : 'Siguiente') +
-          '<span class="arr" aria-hidden="true">→</span>' +
-        '</button>' +
-      '</div>';
-    foot.classList.add('fade-enter');
-    foot.querySelector('#btn-riego-next').addEventListener('click', avanzarRiego);
+      const foot = body.querySelector('#riego-foot');
+      foot.innerHTML =
+        '<div class="water-next-row">' +
+          '<button type="button" class="water-next" id="btn-riego-next">' +
+            (esUltima ? 'Ver las 4 islas' : 'Siguiente') +
+            '<span class="arr" aria-hidden="true">→</span>' +
+          '</button>' +
+        '</div>';
+      foot.classList.add('fade-enter');
+      foot.querySelector('#btn-riego-next').addEventListener('click', avanzarRiego);
+    });
+  }, 460);
+}
+
+/* ---- Cascada de floración ---- */
+
+function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+/* Overshoot suave para las flores (rebote leve al abrirse). */
+function easeOutBack(t) {
+  const c = 1.5;
+  return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2);
+}
+
+/* Perfil por tipo: duración (ms), easing y un pequeño offset de delay
+   (los árboles entran con más peso y un poco después). */
+const PERFIL_VEG = {
+  cobertura: { dur: 240, ease: easeOutCubic, off: 0   },
+  hierba:    { dur: 320, ease: easeOutCubic, off: 0   },
+  arbusto:   { dur: 440, ease: easeOutCubic, off: 70  },
+  helecho:   { dur: 470, ease: easeOutCubic, off: 70  },
+  arbol:     { dur: 660, ease: easeOutCubic, off: 140 },
+  flor:      { dur: 480, ease: easeOutBack,  off: 110 }
+};
+
+/* Hace crecer cada grupo de scale 0 → 1 sobre su atributo transform
+   original (translate/rotate intactos, scale se compone al final → el
+   elemento crece desde su origen local sin desplazarse). El delay sale
+   de la posición vertical: onda que sube por la isla + jitter. */
+function cascadaFloracion(grupos, onDone) {
+  if (!grupos.length) { setTimeout(onDone, 280); return; }
+
+  const SPREAD = 950;   // ms — ventana de la onda espacial
+  const ys = grupos.map(function (g) { return g.y; });
+  const yMin = Math.min.apply(null, ys);
+  const yMax = Math.max.apply(null, ys);
+  const rango = Math.max(1, yMax - yMin);
+
+  let maxFin = 0;
+  grupos.forEach(function (g) {
+    const p = PERFIL_VEG[g.tipo];
+    const subir = (yMax - g.y) / rango;            // 0 = abajo · 1 = arriba
+    const jitter = (Math.random() - 0.5) * 160;
+    g.delay = Math.max(0, subir * SPREAD + p.off + jitter);
+    g.dur = p.dur;
+    g.ease = p.ease;
+    g.listo = false;
+    maxFin = Math.max(maxFin, g.delay + g.dur);
   });
+
+  const inicio = performance.now();
+  function frame(now) {
+    const t = now - inicio;
+    for (let i = 0; i < grupos.length; i++) {
+      const g = grupos[i];
+      if (g.listo) continue;
+      const local = t - g.delay;
+      if (local <= 0) continue;                    // todavía no brota
+      let s;
+      if (local >= g.dur) { s = 1; g.listo = true; }
+      else s = g.ease(local / g.dur);
+      g.el.setAttribute('transform', g.orig + ' scale(' + s.toFixed(4) + ')');
+    }
+    if (t < maxFin) {
+      requestAnimationFrame(frame);
+    } else {
+      grupos.forEach(function (g) {
+        if (!g.listo) { g.el.setAttribute('transform', g.orig + ' scale(1)'); g.listo = true; }
+      });
+      onDone();
+    }
+  }
+  requestAnimationFrame(frame);
 }
 
 function avanzarRiego() {
@@ -794,25 +929,7 @@ function vegetacionImg(level) {
   return '<img class="veg-img" alt="" src="assets/vegetacion/isla-nivel-' + n + '.svg">';
 }
 
-/* Isla del riego — capas de vegetación 0..targetLevel apiladas, todas
-   registradas al mismo viewBox. La capa 0 (árida) arranca visible; las
-   demás se revelan en growStack() para que la vegetación parezca crecer.
-   Como los niveles son acumulativos, revelar la capa K muestra todo 0..K. */
-function islaStackHTML(targetLevel) {
-  const t = Math.max(0, Math.min(4, targetLevel | 0));
-  let capas = '';
-  for (let l = 0; l <= t; l++) {
-    capas += '<img class="veg-layer' + (l === 0 ? ' grown' : '') + '" ' +
-             'data-level="' + l + '" alt="" ' +
-             'src="assets/vegetacion/isla-nivel-' + l + '.svg">';
-  }
-  return '<div class="island-stage">' +
-           '<div class="island-mask">' + capas + '</div>' +
-           '<div class="island-outline"></div>' +
-         '</div>';
-}
-
-/* Enredadera del Total — mismas capas 0..targetLevel apiladas. */
+/* Enredadera del Total — capas 0..targetLevel apiladas (crossfade growStack). */
 function enredaderaStackHTML(targetLevel) {
   const t = Math.max(0, Math.min(4, targetLevel | 0));
   let capas = '';

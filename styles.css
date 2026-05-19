@@ -566,10 +566,10 @@ img { display: block; }
   inset: 0;
   pointer-events: none;
 }
-/* La vegetación son uno o varios <img> de SVG de assets/vegetacion/.
-   El arte nuevo trae la silueta de Mallorca y su contorno dentro del
-   propio SVG (ya no hay máscara ni contorno externos). Las capas se
-   apilan absolutas y registradas para la animación de crecimiento. */
+/* La vegetación: en el riego es un <svg> inline (para animar sus grupos);
+   en el mapa y el total son <img> de SVG de assets/vegetacion/. El arte
+   trae la silueta de Mallorca y su contorno dentro del propio SVG. */
+.island-mask > svg,
 .island-mask img,
 .mini-mask img,
 .vine-layer img {
