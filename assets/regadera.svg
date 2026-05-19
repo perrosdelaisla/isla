@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-72 -40 392 332" preserveAspectRatio="xMidYMid meet">
+  <title>ISLA · regadera · iter 6.2 (clásica, amarilla)</title>
+  
+  <g id="regadera">
+
+    
+    <ellipse cx="170" cy="208" rx="80" ry="6" fill="#1A1A1A" opacity="0.22"></ellipse>
+
+    
+    <g id="asa-back">
+      <path d="M 148 92 Q 178 14 208 92" fill="none" stroke="#6E4C08" stroke-width="9" stroke-linecap="round"></path>
+      <path d="M 148 92 Q 178 14 208 92" fill="none" stroke="#F2C84B" stroke-width="6" stroke-linecap="round"></path>
+      <path d="M 148 92 Q 178 14 208 92" fill="none" stroke="#FFE38A" stroke-width="2" stroke-linecap="round" opacity="0.85" transform="translate(-1.5,-1.5)"></path>
+    </g>
+
+    
+    <g id="cuerpo">
+      
+      <path d="M 118 92&#xA;               L 117 130 L 117 165 L 119 198&#xA;               Q 168 209 219 198&#xA;               L 220 165 L 220 130 L 218 92&#xA;               Q 168 102 118 92 Z" fill="#F2C84B"></path>
+
+      
+      <path d="M 180 92&#xA;               L 180 130 L 180 165 L 184 198&#xA;               Q 200 203 219 198&#xA;               L 220 165 L 220 130 L 218 92&#xA;               Q 199 96 180 92 Z" fill="#D9A82B" opacity="0.85"></path>
+
+      
+      <path d="M 213 94 L 215 196 L 218 196 L 218 94 Z" fill="#8C6300" opacity="0.7"></path>
+
+      
+      <path d="M 118 92&#xA;               L 117 130 L 117 165 L 119 198&#xA;               Q 130 203 148 200&#xA;               L 152 165 L 152 130 L 150 92&#xA;               Q 134 95 118 92 Z" fill="#FFE38A" opacity="0.85"></path>
+
+      
+      <path d="M 124 100 L 126 192" stroke="#FFEFB0" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.85"></path>
+      <path d="M 131 105 L 132 185" stroke="#FFEFB0" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.55"></path>
+
+      
+      <g id="costillas">
+        
+        <path d="M 119 128 Q 168 138 218 128" stroke="#8C6300" stroke-width="1.4" fill="none" opacity="0.7"></path>
+        <path d="M 119 130 Q 168 140 218 130" stroke="#FFE38A" stroke-width="0.9" fill="none" opacity="0.75"></path>
+        
+        <path d="M 118 163 Q 168 173 219 163" stroke="#8C6300" stroke-width="1.4" fill="none" opacity="0.7"></path>
+        <path d="M 118 165 Q 168 175 219 165" stroke="#FFE38A" stroke-width="0.9" fill="none" opacity="0.75"></path>
+        
+        <path d="M 119 190 Q 168 200 219 190" stroke="#8C6300" stroke-width="1.2" fill="none" opacity="0.6"></path>
+        <path d="M 119 192 Q 168 202 219 192" stroke="#FFE38A" stroke-width="0.8" fill="none" opacity="0.6"></path>
+      </g>
+
+      
+      <path d="M 119 198 Q 168 209 219 198 Q 168 204 119 198 Z" fill="#6E4C08" opacity="0.55"></path>
+
+      
+      <g id="boca">
+        
+        <ellipse cx="168" cy="90" rx="50" ry="11" fill="#8C6300"></ellipse>
+        
+        <ellipse cx="168" cy="90" rx="50" ry="11" fill="none" stroke="#F2C84B" stroke-width="1.2"></ellipse>
+        
+        <ellipse cx="169" cy="92" rx="46" ry="8" fill="#1A1A1A"></ellipse>
+        
+        <path d="M 124 90 Q 168 98 213 90" stroke="#3D2A04" stroke-width="2" fill="none" opacity="0.7"></path>
+        
+        <path d="M 126 92 Q 168 100 212 92" stroke="#FFE38A" stroke-width="1.4" fill="none" opacity="0.9"></path>
+        
+        <path d="M 130 84 Q 158 78 178 78" stroke="#FFEFB0" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.9"></path>
+      </g>
+    </g>
+
+    
+    <g id="cano">
+      
+      <path d="M 118 132 Q 80 116 38 92&#xA;               L 36 116&#xA;               Q 80 132 118 162 Z" fill="#8C6300"></path>
+      
+      <path d="M 118 132 Q 80 116 40 90&#xA;               L 38 114&#xA;               Q 80 130 118 160 Z" fill="#F2C84B"></path>
+      
+      <path d="M 118 132 Q 80 116 40 90&#xA;               L 42 98&#xA;               Q 80 122 120 142 Z" fill="#FFE38A" opacity="0.95"></path>
+      
+      <path d="M 122 132 Q 82 117 44 92" stroke="#FFEFB0" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.9"></path>
+      
+      <ellipse cx="119" cy="147" rx="4.5" ry="16" fill="#8C6300"></ellipse>
+      <ellipse cx="119" cy="147" rx="2.8" ry="14" fill="#F2C84B"></ellipse>
+      <ellipse cx="117" cy="143" rx="1.2" ry="7" fill="#FFE38A" opacity="0.85"></ellipse>
+    </g>
+
+    
+    <g id="roseta">
+      
+      <ellipse cx="35" cy="98" rx="27" ry="28" fill="#6E4C08" opacity="0.95"></ellipse>
+      
+      <ellipse cx="32" cy="95" rx="26" ry="27" fill="#8C6300"></ellipse>
+      
+      <ellipse cx="32" cy="95" rx="24" ry="25" fill="#F2C84B"></ellipse>
+      
+      <path d="M 32 70 A 24 25 0 0 0 8 95 A 24 25 0 0 0 18 115 Q 24 100 38 86 Q 35 78 32 70 Z" fill="#FFE38A" opacity="0.92"></path>
+      
+      <ellipse cx="20" cy="80" rx="5" ry="8" transform="rotate(-30 20 80)" fill="#FFEFB0" opacity="0.85"></ellipse>
+      
+      <ellipse cx="32" cy="95" rx="26" ry="27" fill="none" stroke="#6E4C08" stroke-width="1" opacity="0.85"></ellipse>
+      
+      <ellipse cx="32" cy="95" rx="22" ry="23" fill="none" stroke="#D9A82B" stroke-width="0.8" opacity="0.55"></ellipse>
+
+      
+      <g fill="#1A1A1A">
+        
+        <circle cx="32" cy="95" r="1.5"></circle>
+        
+        <circle cx="40.0" cy="95.0" r="1.3"></circle>
+        <circle cx="36.0" cy="88.0" r="1.3"></circle>
+        <circle cx="28.0" cy="88.0" r="1.3"></circle>
+        <circle cx="24.0" cy="95.0" r="1.3"></circle>
+        <circle cx="28.0" cy="102.0" r="1.3"></circle>
+        <circle cx="36.0" cy="102.0" r="1.3"></circle>
+        
+        <circle cx="48.0" cy="95.0" r="1.2"></circle>
+        <circle cx="46.0" cy="87.0" r="1.2"></circle>
+        <circle cx="40.0" cy="81.0" r="1.2"></circle>
+        <circle cx="32.0" cy="79.0" r="1.2"></circle>
+        <circle cx="24.0" cy="81.0" r="1.2"></circle>
+        <circle cx="18.0" cy="87.0" r="1.2"></circle>
+        <circle cx="16.0" cy="95.0" r="1.2"></circle>
+        <circle cx="18.0" cy="103.0" r="1.2"></circle>
+        <circle cx="24.0" cy="109.0" r="1.2"></circle>
+        <circle cx="32.0" cy="111.0" r="1.2"></circle>
+        <circle cx="40.0" cy="109.0" r="1.2"></circle>
+        <circle cx="46.0" cy="103.0" r="1.2"></circle>
+      </g>
+    </g>
+
+    
+    <g id="pitorro" transform="translate(32,95)"></g>
+
+    
+    <g id="asa-front">
+      
+      <ellipse cx="148" cy="92" rx="4" ry="3" fill="#8C6300"></ellipse>
+      <ellipse cx="208" cy="92" rx="4" ry="3" fill="#8C6300"></ellipse>
+      <ellipse cx="148" cy="91" rx="3.2" ry="2.2" fill="#F2C84B"></ellipse>
+      <ellipse cx="208" cy="91" rx="3.2" ry="2.2" fill="#F2C84B"></ellipse>
+    </g>
+  </g>
+</svg>

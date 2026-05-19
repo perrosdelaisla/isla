@@ -460,7 +460,7 @@ function renderRiego() {
           '<div class="island-mask" id="isla-svg"></div>' +
           '<div class="island-outline"></div>' +
         '</div>' +
-        '<div class="cup-wrap disabled" id="cup-riego"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>' +
+        '<div class="cup-wrap disabled" id="cup-riego"></div>' +
         '<div class="drops" id="drops-riego" aria-hidden="true"></div>' +
         '<div class="score-float hidden" id="score-float">' +
           '<div class="score-label">Puntaje</div>' +
@@ -470,24 +470,29 @@ function renderRiego() {
     '</div>' +
     '<div class="water-foot" id="riego-foot">' +
       '<div class="water-cta">Riega para descubrir</div>' +
-      '<div class="water-helper">Toca el vasito</div>' +
+      '<div class="water-helper">Toca la regadera</div>' +
     '</div>';
 
   const body = document.getElementById('riego-body');
   body.innerHTML = html;
   state.riegoGrupos = null;
-  cargarIslaSVG(targetLevel, body);
-}
 
-/* Carga el SVG del nivel objetivo INLINE dentro de .island-mask, deja la
-   vegetación en estado árido (scale 0) y habilita el vasito. */
-function cargarIslaSVG(targetLevel, body) {
-  const cont = body.querySelector('#isla-svg');
+  /* El vasito se habilita cuando la isla Y la regadera están montadas. */
   const cup = body.querySelector('#cup-riego');
+  let vegListo = false, regListo = false;
   const habilitar = function () {
+    if (!vegListo || !regListo) return;
     cup.classList.remove('disabled');
     cup.addEventListener('click', regar);
   };
+  cargarRegadera(cup, function () { regListo = true; habilitar(); });
+  cargarIslaSVG(targetLevel, body, function () { vegListo = true; habilitar(); });
+}
+
+/* Carga el SVG del nivel objetivo INLINE dentro de .island-mask y deja la
+   vegetación en estado árido (scale 0). Llama onReady al terminar. */
+function cargarIslaSVG(targetLevel, body, onReady) {
+  const cont = body.querySelector('#isla-svg');
 
   fetch('assets/vegetacion/isla-nivel-' + targetLevel + '.svg')
     .then(function (r) { return r.text(); })
@@ -500,13 +505,13 @@ function cargarIslaSVG(targetLevel, body) {
         g.el.setAttribute('transform', g.orig + ' scale(0)');
       });
       state.riegoGrupos = grupos;
-      habilitar();
+      if (onReady) onReady();
     })
     .catch(function () {
       /* Fallback improbable (fetch falla): isla estática, sin cascada. */
       cont.innerHTML = vegetacionImg(targetLevel);
       state.riegoGrupos = [];
-      habilitar();
+      if (onReady) onReady();
     });
 }
 
@@ -537,8 +542,9 @@ function tipoVeg(id) {
   return 'cobertura';   // m-* y cualquier otro
 }
 
-/* Riega la isla: vuelca el vasito, caen gotas y la vegetación FLORECE en
-   cascada — elemento por elemento, en una onda que sube por la isla. */
+/* Riega la isla: la regadera se inclina, el agua sale del pitorro y la
+   vegetación FLORECE en cascada — elemento por elemento, en una onda que
+   sube por la isla. */
 function regar() {
   if (state.riegoRegada) return;
   state.riegoRegada = true;
@@ -550,11 +556,18 @@ function regar() {
 
   const cup = body.querySelector('#cup-riego');
   cup.classList.add('pour', 'disabled');
-  setTimeout(function () { cup.classList.add('spent'); }, 900);
 
-  spawnDrops(body.querySelector('#drops-riego'));
+  /* La regadera se inclina; al volcar el pitorro arranca la ducha. El agua
+     frena en la superficie de la isla (~mitad del alto de #isla-svg). */
+  inclinarRegadera(cup.querySelector('svg'), function () {
+    spawnShower(cup, body.querySelector('#drops-riego'),
+                body.querySelector('#isla-svg'), 0.5);
+  });
 
-  /* La floración arranca cuando el agua "cae" (~460ms). */
+  /* La regadera se retira cuando el agua terminó de caer. */
+  setTimeout(function () { cup.classList.add('spent'); }, 1700);
+
+  /* La floración arranca cuando el agua moja la isla (~820ms). */
   setTimeout(function () {
     cascadaFloracion(state.riegoGrupos || [], function () {
       const sf = body.querySelector('#score-float');
@@ -573,7 +586,7 @@ function regar() {
       foot.classList.add('fade-enter');
       foot.querySelector('#btn-riego-next').addEventListener('click', avanzarRiego);
     });
-  }, 460);
+  }, 820);
 }
 
 /* ---- Cascada de floración ---- */
@@ -752,18 +765,22 @@ function renderTotal() {
         '<img class="logo-img" src="https://i.ibb.co/3YNrs9tM/Dise-o-con-cambio-de-negro-a-blanco.png" alt="Perros de la Isla">' +
         '<div class="vine-layer">' + enredaderaStackHTML(targetVine) + '</div>' +
         '<div class="drops" id="drops-total" aria-hidden="true"></div>' +
-        '<div class="cup-wrap" id="cup-total"><div class="tap-hint">tócalo</div>' + cupSVG() + '</div>' +
+        '<div class="cup-wrap disabled" id="cup-total"></div>' +
       '</div>' +
       '<div class="total-reveal" id="total-reveal">' +
         '<div class="water-cta">Riega el resultado</div>' +
-        '<div class="water-helper">Toca el vasito</div>' +
+        '<div class="water-helper">Toca la regadera</div>' +
       '</div>' +
     '</div>' +
     '<div class="total-foot" id="total-foot"></div>';
 
   const body = document.getElementById('total-body');
   body.innerHTML = html;
-  body.querySelector('#cup-total').addEventListener('click', regarTotal);
+  const cup = body.querySelector('#cup-total');
+  cargarRegadera(cup, function () {
+    cup.classList.remove('disabled');
+    cup.addEventListener('click', regarTotal);
+  });
 }
 
 function renderTotalFoot(critical, nombre) {
@@ -824,8 +841,9 @@ function wireTotalFoot(body) {
   if (restart) restart.addEventListener('click', reiniciar);
 }
 
-/* Riega el Total: vuelca el vasito, caen gotas y la enredadera crece
-   alrededor del logo hasta el nivel del puntaje global. */
+/* Riega el Total: la regadera se inclina y riega el logo desde el costado;
+   el agua dispara el crecimiento de la enredadera/corona hasta el nivel
+   del puntaje global. */
 function regarTotal() {
   if (state.totalRegado) return;
   state.totalRegado = true;
@@ -838,24 +856,32 @@ function regarTotal() {
 
   const cup = body.querySelector('#cup-total');
   cup.classList.add('pour', 'disabled');
-  setTimeout(function () { cup.classList.add('spent'); }, 900);
 
-  spawnDrops(body.querySelector('#drops-total'));
-
-  growStack(body.querySelector('.vine-layer'), targetVine, function () {
-    const reveal = body.querySelector('#total-reveal');
-    reveal.innerHTML =
-      '<div class="total-score-row fade-enter">' +
-        '<div class="total-score-label">Bienestar global</div>' +
-        '<div class="score-impact"><span id="total-score-num">0</span><span class="max"> / 100</span></div>' +
-      '</div>';
-    countUp(body.querySelector('#total-score-num'), global, 800);
-
-    const foot = body.querySelector('#total-foot');
-    foot.innerHTML = renderTotalFoot(critical, nombre);
-    foot.classList.add('fade-enter');
-    wireTotalFoot(foot);
+  /* La regadera se inclina; al volcar el pitorro arranca la ducha. El agua
+     frena sobre el logo, no se pasa de largo. */
+  inclinarRegadera(cup.querySelector('svg'), function () {
+    spawnShower(cup, body.querySelector('#drops-total'),
+                body.querySelector('.logo-img'), 0.42);
   });
+  setTimeout(function () { cup.classList.add('spent'); }, 1700);
+
+  /* El agua moja el logo (~420ms) y dispara el crecimiento de la corona. */
+  setTimeout(function () {
+    growStack(body.querySelector('.vine-layer'), targetVine, function () {
+      const reveal = body.querySelector('#total-reveal');
+      reveal.innerHTML =
+        '<div class="total-score-row fade-enter">' +
+          '<div class="total-score-label">Bienestar global</div>' +
+          '<div class="score-impact"><span id="total-score-num">0</span><span class="max"> / 100</span></div>' +
+        '</div>';
+      countUp(body.querySelector('#total-score-num'), global, 800);
+
+      const foot = body.querySelector('#total-foot');
+      foot.innerHTML = renderTotalFoot(critical, nombre);
+      foot.classList.add('fade-enter');
+      wireTotalFoot(foot);
+    });
+  }, 420);
 }
 
 function abrirCTA() {
@@ -919,7 +945,7 @@ function reiniciar() {
    Arte definitivo de Claude Design en assets/vegetacion/:
    isla-nivel-0..4.svg (viewBox 340×280) y
    enredadera-nivel-0..4.svg (viewBox 290×290).
-   El vasito (cupSVG) sigue inline: no es vegetación.
+   La regadera (cargarRegadera) también va inline: no es vegetación.
    ============================================================ */
 
 /* <img> de la isla para un nivel (0 árida ··· 4 plena). Vive dentro de un
@@ -941,18 +967,25 @@ function enredaderaStackHTML(targetLevel) {
   return capas;
 }
 
-/* SVG del vasito de riego */
-function cupSVG() {
-  return '<svg viewBox="0 0 84 100">' +
-    '<path d="M16 28 L22 88 Q22 94 28 94 L56 94 Q62 94 62 88 L68 28 Z" ' +
-      'fill="#F5EFE0" stroke="#1A1A1A" stroke-width="2.4" stroke-linejoin="round"/>' +
-    '<ellipse cx="42" cy="28" rx="26" ry="6" fill="#FAF5E8" stroke="#1A1A1A" stroke-width="2.4"/>' +
-    '<ellipse cx="42" cy="28" rx="22" ry="4.5" fill="#7BC4E8"/>' +
-    '<path d="M22 36 Q24 60 26 84" stroke="#FFFFFF" stroke-width="2" fill="none" ' +
-      'opacity="0.55" stroke-linecap="round"/>' +
-    '<path d="M68 38 Q80 42 78 60 Q76 72 64 70" stroke="#1A1A1A" stroke-width="2.4" ' +
-      'fill="none" stroke-linecap="round"/>' +
-  '</svg>';
+/* La regadera de riego — se monta INLINE desde assets/regadera.svg dentro
+   del .cup-wrap (hay que poder inclinar el grupo #regadera y leer el
+   #pitorro). Se cachea tras la primera carga; onReady corre con el SVG ya
+   en el DOM. La usan las dos pantallas que riegan (riego de islas y total). */
+let _regaderaSVG = null;
+function cargarRegadera(cupEl, onReady) {
+  const montar = function (txt) {
+    cupEl.innerHTML = '<div class="tap-hint">tócalo</div>' + txt;
+    if (onReady) onReady();
+  };
+  if (_regaderaSVG !== null) { montar(_regaderaSVG); return; }
+  fetch('assets/regadera.svg')
+    .then(function (r) { return r.text(); })
+    .then(function (txt) {
+      const i = txt.indexOf('<svg');
+      _regaderaSVG = (i >= 0 ? txt.slice(i) : txt);
+      montar(_regaderaSVG);
+    })
+    .catch(function () { _regaderaSVG = ''; montar(''); });
 }
 
 /* ============================================================
@@ -981,18 +1014,91 @@ function growStack(contenedor, targetLevel, onDone) {
   setTimeout(onDone, fin);
 }
 
-/* Gotas de agua cayendo desde el vasito hacia la isla. */
-function spawnDrops(contenedor) {
-  if (!contenedor) return;
-  contenedor.innerHTML = '';
-  for (let i = 0; i < 5; i++) {
-    const d = document.createElement('span');
-    d.className = 'drop';
-    d.style.left = (i % 3) * 11 + 'px';
-    d.style.animationDelay = (130 + i * 85) + 'ms';
-    contenedor.appendChild(d);
+/* Inclina la regadera para verter. Anima el atributo transform del grupo
+   #regadera (rotación SVG, no CSS) pivotando sobre la base del cuerpo —
+   así getScreenCTM del #pitorro refleja la posición real del agua. El
+   pitorro está a la izquierda, así que la regadera se inclina hacia ese
+   lado. onVierte se dispara cuando el pitorro ya bajó: ahí cae el agua. */
+function inclinarRegadera(svg, onVierte) {
+  const reg = svg && svg.querySelector('#regadera');
+  if (!reg) { if (onVierte) onVierte(); return; }
+  const PIVX = 168, PIVY = 200;   // base del cuerpo, en coords del viewBox
+  const ANG  = -33;               // inclinación final hacia el pitorro
+  const DUR  = 620;               // ms
+  const inicio = performance.now();
+  let vertido = false;
+  function frame(now) {
+    const t = Math.min(1, (now - inicio) / DUR);
+    const ang = ANG * easeOutCubic(t);
+    reg.setAttribute('transform',
+      'rotate(' + ang.toFixed(2) + ' ' + PIVX + ' ' + PIVY + ')');
+    if (!vertido && t >= 0.62) { vertido = true; if (onVierte) onVierte(); }
+    if (t < 1) requestAnimationFrame(frame);
   }
-  setTimeout(function () { contenedor.innerHTML = ''; }, 1700);
+  requestAnimationFrame(frame);
+}
+
+/* Ducha de agua desde la roseta de la regadera. Lee la posición real del
+   #pitorro (ya inclinado) y esparce hilos finos cayendo — como las
+   perforaciones de la roseta, no unas pocas gotas gruesas. El agua frena
+   en la SUPERFICIE del objetivo (isla / logo): la caída no es fija, se
+   calcula con la posición real en pantalla del objetivo. Ahí se absorbe. */
+function spawnShower(cupWrap, contenedor, objetivo, fraccion) {
+  if (!cupWrap || !contenedor) return;
+  contenedor.innerHTML = '';
+  const svg = cupWrap.querySelector('svg');
+  const pitorro = svg && svg.querySelector('#pitorro');
+  if (!svg || !pitorro) return;
+
+  const DURACION = 900;   // ms — cuánto sigue saliendo agua
+  const LOTE = 44;        // ms entre lotes de hilos
+  const pt = svg.createSVGPoint();
+
+  /* Y de impacto en pantalla: la superficie del objetivo. fraccion ubica
+     el punto dentro de su alto (0 = borde superior, 1 = inferior). */
+  function superficieY() {
+    if (objetivo) {
+      const r = objetivo.getBoundingClientRect();
+      return r.top + r.height * (fraccion || 0.5);
+    }
+    return contenedor.getBoundingClientRect().bottom - 8;
+  }
+
+  function caer() {
+    const ctm = pitorro.getScreenCTM();
+    if (!ctm) return;
+    pt.x = 0; pt.y = 0;
+    const sp = pt.matrixTransform(ctm);          // pitorro → píxeles de pantalla
+    const box = contenedor.getBoundingClientRect();
+    const ox = sp.x - box.left;
+    const oy = sp.y - box.top;
+    const impacto = superficieY();
+
+    const n = 2 + Math.floor(Math.random() * 3);  // 2-4 hilos por lote
+    for (let i = 0; i < n; i++) {
+      const dx = (Math.random() - 0.5) * 34;      // dispersión de la roseta
+      /* caída = del pitorro a la superficie (± leve, la superficie no es plana) */
+      const caida = Math.max(34, impacto - sp.y + (Math.random() - 0.5) * 10);
+      const d = document.createElement('span');
+      d.className = 'shower-drop';
+      d.style.left = (ox + dx).toFixed(1) + 'px';
+      d.style.top  = oy.toFixed(1) + 'px';
+      d.style.setProperty('--dist',  caida.toFixed(0) + 'px');
+      d.style.setProperty('--drift', (dx * 0.3).toFixed(1) + 'px');
+      d.style.setProperty('--fall',  (430 + Math.random() * 200).toFixed(0) + 'ms');
+      contenedor.appendChild(d);
+    }
+  }
+
+  caer();
+  let pasado = 0;
+  const iv = setInterval(function () {
+    caer();
+    pasado += LOTE;
+    if (pasado >= DURACION) clearInterval(iv);
+  }, LOTE);
+
+  setTimeout(function () { contenedor.innerHTML = ''; }, DURACION + 900);
 }
 
 /* Conteo animado del puntaje, 0 → valor final, con easing suave. */

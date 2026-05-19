@@ -583,27 +583,32 @@ img { display: block; }
 .veg-layer { opacity: 0; transition: opacity 0.42s ease; }
 .veg-layer.grown { opacity: 1; }
 
-/* ---------- Lienzo del riego (isla + vasito + gotas) ---------- */
+/* ---------- Lienzo del riego (isla + regadera + ducha) ---------- */
 .riego-holder { position: relative; display: inline-block; }
 
-/* ---------- El vasito ---------- */
+/* ---------- La regadera ----------
+   El SVG tiene viewBox -72 -40 392 332: el dibujo (~280×220) vive en el
+   centro con aire alrededor para que la roseta no se corte al inclinarse.
+   La caja se dimensiona a la mitad del viewBox (escala 0.5) — la regadera
+   queda al mismo tamaño visual que antes, solo con margen libre.
+   En el riego va corrida a la derecha: riega la isla desde el costado. */
 .cup-wrap {
   position: absolute;
-  right: -8px;
-  top: 4px;
-  width: 84px;
-  height: 100px;
+  right: -36px;
+  top: -42px;
+  width: 196px;
+  height: 166px;
   cursor: pointer;
-  transform-origin: 70% 88%;
-  transition: transform 0.1s ease, opacity 0.4s ease;
+  transform-origin: 50% 60%;
+  transition: transform 0.1s ease, opacity 0.45s ease;
 }
 .cup-wrap svg { width: 100%; height: 100%; }
 .cup-wrap:active:not(.disabled) { transform: scale(0.96); }
 .cup-wrap.disabled { pointer-events: none; }
 .cup-wrap .tap-hint {
   position: absolute;
-  top: -12px;
-  left: 50%;
+  top: 28px;
+  left: 47%;
   transform: translateX(-50%);
   font-size: 9px;
   letter-spacing: 2px;
@@ -615,39 +620,39 @@ img { display: block; }
 }
 @keyframes tapPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-/* Vuelco del vasito al regar (V1 — disparo por tap; el arrastre es V2) */
-.cup-wrap.pour { animation: cupPour 0.55s cubic-bezier(.45, .05, .5, .97) forwards; }
+/* Al regar: la regadera se inclina (lo anima inclinarRegadera en JS, sobre
+   el atributo transform del grupo #regadera) y luego se retira. */
 .cup-wrap.pour .tap-hint { display: none; }
 .cup-wrap.spent { opacity: 0; }
-@keyframes cupPour {
-  to { transform: rotate(-70deg) translate(2px, -6px); }
-}
 
-/* ---------- Gotas de agua ---------- */
+/* ---------- Ducha de agua (roseta de la regadera) ---------- */
 .drops {
   position: absolute;
-  top: 34px;
-  right: 30px;
-  width: 36px;
-  height: 20px;
+  inset: 0;
   pointer-events: none;
   z-index: 6;
 }
-.drop {
+/* Hilos finos de agua que caen desde el pitorro — como las perforaciones
+   de la roseta. Cada uno recibe --dist, --drift y --fall por inline style. */
+.shower-drop {
   position: absolute;
-  top: 0;
-  width: 7px;
-  height: 10px;
-  background: #7BC4E8;
-  border-radius: 50% 50% 50% 50% / 60% 60% 42% 42%;
+  width: 2.4px;
+  height: 8px;
+  margin-left: -1.2px;
+  background: #8FCDEB;
+  border-radius: 1.2px;
   opacity: 0;
-  animation: dropFall 0.8s cubic-bezier(.4, .15, .7, 1) forwards;
+  will-change: transform, opacity;
+  animation: showerFall var(--fall, 520ms) cubic-bezier(.42, .1, .72, 1) forwards;
 }
-@keyframes dropFall {
-  0%   { opacity: 0; transform: translateY(0) scale(0.5); }
-  18%  { opacity: 1; }
-  80%  { opacity: 0.9; transform: translateY(116px) scale(1); }
-  100% { opacity: 0; transform: translateY(136px) scale(0.4); }
+/* El hilo cae hasta --dist (la superficie de la isla/logo) y AHÍ se
+   absorbe: del 72% al 100% no avanza más, se aplana y se desvanece —
+   un toque de salpicadura al tocar la superficie. */
+@keyframes showerFall {
+  0%   { opacity: 0; transform: translate(0, 0) scale(1, 0.5); }
+  12%  { opacity: 0.9; }
+  72%  { opacity: 0.9; transform: translate(var(--drift, 0), var(--dist, 80px)) scale(1, 1.15); }
+  100% { opacity: 0; transform: translate(var(--drift, 0), var(--dist, 80px)) scale(2.2, 0.3); }
 }
 
 /* ---------- Número de puntaje ---------- */
@@ -864,9 +869,10 @@ img { display: block; }
   z-index: 3;
   pointer-events: none;
 }
-/* El vasito del Total va POR DELANTE del logo y la enredadera (z-index 5
-   sobre vine-layer 3 y logo-img 2) — fix del bug de z-index del Bloque 1. */
-.total-stage .cup-wrap { right: 2px; top: 18px; z-index: 5; }
+/* La regadera del Total va POR DELANTE del logo y la enredadera (z-index 5
+   sobre vine-layer 3 y logo-img 2). Se posiciona desplazada a la derecha:
+   el cuerpo queda fuera del logo y solo el pitorro lo riega desde el costado. */
+.total-stage .cup-wrap { right: -92px; top: -73px; z-index: 5; }
 
 .total-score-row { text-align: center; }
 .total-score-label {
