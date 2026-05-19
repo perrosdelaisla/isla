@@ -719,7 +719,7 @@ img { display: block; }
   width: 260px;
   height: 260px;
   background: url("assets/brujula.png") center / contain no-repeat;
-  opacity: 0.08;
+  opacity: 0.4;
   pointer-events: none;
   z-index: 0;
 }
@@ -738,7 +738,7 @@ img { display: block; }
   transition: background 0.15s ease;
 }
 .mini-island:active { background: rgba(0, 0, 0, 0.04); }
-.mini-stage { position: relative; width: 136px; height: 112px; }
+.mini-stage { position: relative; width: 100%; max-width: 200px; aspect-ratio: 340 / 280; }
 .mini-mask {
   position: absolute;
   inset: 0;
@@ -1030,7 +1030,6 @@ img { display: block; }
   .water-dim { font-size: 40px; }
   .score-impact { font-size: 100px; }
   .island-stage { width: 264px; height: 217px; }
-  .mini-stage { width: 120px; height: 99px; }
   .dev-banner { font-size: 0.78rem; padding: 0.5rem 0.75rem; }
 }
 
