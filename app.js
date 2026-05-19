@@ -609,6 +609,42 @@ const PERFIL_VEG = {
   flor:      { dur: 480, ease: easeOutBack,  off: 110 }
 };
 
+/* ---- Viento ambiente ---- */
+
+/* Perfil de oscilación por tipo: amplitud (grados) y rango de período (ms).
+   Árboles: lento y leve. Hierba y flores: más vivo y rápido. La cobertura
+   del suelo (m-*, ~158 elementos) NO está acá a propósito → queda quieta,
+   por rendimiento. Para sumar/quitar un tipo del viento, editá esta tabla. */
+const PERFIL_VIENTO = {
+  arbol:   { amp: 2.6, durMin: 5200, durMax: 7000 },
+  arbusto: { amp: 3.2, durMin: 4400, durMax: 5600 },
+  helecho: { amp: 3.6, durMin: 3900, durMax: 5100 },
+  hierba:  { amp: 4.4, durMin: 2700, durMax: 3800 },
+  flor:    { amp: 4.6, durMin: 2900, durMax: 4100 }
+};
+
+/* Pone un grupo ya brotado a mecerse con el viento. La oscilación es una
+   animación CSS (keyframes vegWind + custom properties por elemento), no un
+   loop de JS — corre fuera del hilo principal. El keyframe arranca y termina
+   en reposo (rotate 0) → sin salto al pasar del brote al viento. Cada
+   elemento lleva período y desfase propios para que no se mezan en sincro.
+   Rota sobre su origen local (base de la planta / centro de la flor). */
+function mecer(g) {
+  if (g.meciendo) return;
+  const p = PERFIL_VIENTO[g.tipo];
+  if (!p) return;                       // cobertura y demás: quietos
+  g.meciendo = true;
+  const m = g.orig.match(/translate\(\s*(-?[\d.]+)[ ,]+(-?[\d.]+)/);
+  const el = g.el;
+  el.style.setProperty('--w-tx', (m ? m[1] : '0') + 'px');
+  el.style.setProperty('--w-ty', (m ? m[2] : '0') + 'px');
+  el.style.setProperty('--w-amp', p.amp.toFixed(2) + 'deg');
+  el.style.setProperty('--w-dur',
+    (p.durMin + Math.random() * (p.durMax - p.durMin)).toFixed(0) + 'ms');
+  el.style.setProperty('--w-delay', (Math.random() * 1400).toFixed(0) + 'ms');
+  el.classList.add('veg-wind');
+}
+
 /* Hace crecer cada grupo de scale 0 → 1 sobre su atributo transform
    original (translate/rotate intactos, scale se compone al final → el
    elemento crece desde su origen local sin desplazarse). El delay sale
@@ -646,12 +682,15 @@ function cascadaFloracion(grupos, onDone) {
       if (local >= g.dur) { s = 1; g.listo = true; }
       else s = g.ease(local / g.dur);
       g.el.setAttribute('transform', g.orig + ' scale(' + s.toFixed(4) + ')');
+      /* Brote terminado → el elemento pasa a mecerse con el viento. */
+      if (g.listo) mecer(g);
     }
     if (t < maxFin) {
       requestAnimationFrame(frame);
     } else {
       grupos.forEach(function (g) {
         if (!g.listo) { g.el.setAttribute('transform', g.orig + ' scale(1)'); g.listo = true; }
+        mecer(g);
       });
       onDone();
     }

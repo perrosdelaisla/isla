@@ -583,6 +583,38 @@ img { display: block; }
 .veg-layer { opacity: 0; transition: opacity 0.42s ease; }
 .veg-layer.grown { opacity: 1; }
 
+/* ---------- Viento ambiente ----------
+   La JS (mecer) aplica esta clase a cada grupo de planta cuando termina su
+   brote. Anima el transform del grupo: translate y scale quietos, solo la
+   rotación oscila en loop. transform-origin 0 0 → rota sobre el origen
+   local del grupo = la base de la planta (o el centro, en las flores).
+   tx/ty/amp/dur/delay vienen por custom property, propios de cada elemento.
+   Los timing-function por keyframe dan vaivén tipo péndulo: rápido al pasar
+   por el reposo, lento en los extremos. */
+.veg-wind {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation-name: vegWind;
+  animation-duration: var(--w-dur, 4000ms);
+  animation-delay: var(--w-delay, 0ms);
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+@keyframes vegWind {
+  0%   { transform: translate(var(--w-tx, 0), var(--w-ty, 0)) rotate(0deg) scale(1);
+         animation-timing-function: ease-out; }
+  25%  { transform: translate(var(--w-tx, 0), var(--w-ty, 0)) rotate(var(--w-amp, 3deg)) scale(1);
+         animation-timing-function: ease-in; }
+  50%  { transform: translate(var(--w-tx, 0), var(--w-ty, 0)) rotate(0deg) scale(1);
+         animation-timing-function: ease-out; }
+  75%  { transform: translate(var(--w-tx, 0), var(--w-ty, 0)) rotate(calc(-1 * var(--w-amp, 3deg))) scale(1);
+         animation-timing-function: ease-in; }
+  100% { transform: translate(var(--w-tx, 0), var(--w-ty, 0)) rotate(0deg) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .veg-wind { animation: none; }
+}
+
 /* ---------- Lienzo del riego (isla + regadera + ducha) ---------- */
 .riego-holder { position: relative; display: inline-block; }
 
