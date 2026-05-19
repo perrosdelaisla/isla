@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290" preserveAspectRatio="xMidYMid meet">
-  <title>ENREDADERA · nivel 0 · Árido</title>
-  
-  <g stroke="#6B4A2E" stroke-width="2.2" fill="none" stroke-linecap="round">
-    <path d="M 165.0 258.3 Q 155.0 259.6 150.0 259.8 Q 145.0 260.0 140.0 259.8 Q 135.0 259.6 130.0 258.9 T 125.0 258.3" stroke="#6B4A2E" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
-    <path d="M 145 260 L 138 268"></path>
-    <path d="M 138 268 L 130 270"></path>
-    <path d="M 145 260 L 153 268"></path>
-    <path d="M 153 268 L 161 270"></path>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290" preserveAspectRatio="xMidYMid meet"><title>ENREDADERA · nivel 0 · Árido</title><g id="brote-base" transform="translate(145,231)"><path d="M -14 -4 Q 0 -2 14 -4" fill="none" stroke="#6B4A2E" stroke-width="2" stroke-linecap="round"></path><g transform="translate(-6,-3) rotate(-30)"><path d="M 0 0 C -2.6 -2.4, -2.2 -6.4, 0.3 -7.7 C 2.2 -6.4, 2.6 -2.4, 0 0 Z" fill="#6E9E45" transform="translate(0.5,0.4)" opacity="0.85"></path><path d="M 0 0 C -2.6 -2.4, -2.2 -6.4, 0 -8 C 2.2 -6.4, 2.6 -2.4, 0 0 Z" fill="#9CC368"></path><path d="M 0 0 C -2.4 -2.4, -2 -6.4, 0 -8 C -0.5 -5.6, -1 -2.4, 0 0 Z" fill="#C7DC78" opacity="0.78"></path><line x1="0" y1="-0.8" x2="0" y2="-7.4" stroke="#264418" stroke-width="0.6" opacity="0.45"></line></g><g transform="translate(6,-3) rotate(30)"><path d="M 0 0 C -2.6 -2.4, -2.2 -6.4, 0.3 -7.7 C 2.2 -6.4, 2.6 -2.4, 0 0 Z" fill="#3F6B2E" transform="translate(0.5,0.4)" opacity="0.85"></path><path d="M 0 0 C -2.6 -2.4, -2.2 -6.4, 0 -8 C 2.2 -6.4, 2.6 -2.4, 0 0 Z" fill="#6E9E45"></path><path d="M 0 0 C -2.4 -2.4, -2 -6.4, 0 -8 C -0.5 -5.6, -1 -2.4, 0 0 Z" fill="#9CC368" opacity="0.78"></path><line x1="0" y1="-0.8" x2="0" y2="-7.4" stroke="#264418" stroke-width="0.6" opacity="0.45"></line></g><g transform="translate(0,-4) rotate(0)"><path d="M 0 0 C -2.9 -2.7, -2.4 -7.2, 0.3 -8.7 C 2.4 -7.2, 2.9 -2.7, 0 0 Z" fill="#6E9E45" transform="translate(0.5,0.4)" opacity="0.85"></path><path d="M 0 0 C -2.9 -2.7, -2.4 -7.2, 0 -9 C 2.4 -7.2, 2.9 -2.7, 0 0 Z" fill="#9CC368"></path><path d="M 0 0 C -2.7 -2.7, -2.3 -7.2, 0 -9 C -0.5 -6.3, -1.2 -2.7, 0 0 Z" fill="#C7DC78" opacity="0.78"></path><line x1="0" y1="-0.9" x2="0" y2="-8.3" stroke="#264418" stroke-width="0.6" opacity="0.45"></line></g></g></svg>
