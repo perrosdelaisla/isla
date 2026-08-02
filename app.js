@@ -13,22 +13,6 @@
    getEvaluacion viven en supabase-client.js).
    ============================================================= */
 
-/* ---- Banner "versión en desarrollo" ---- */
-(function initDevBanner() {
-  const banner = document.getElementById('dev-banner');
-  const closeBtn = document.getElementById('dev-banner-close');
-  if (!banner || !closeBtn) return;
-
-  if (sessionStorage.getItem('dev-banner-closed') === '1') {
-    banner.setAttribute('hidden', '');
-    return;
-  }
-  closeBtn.addEventListener('click', () => {
-    banner.setAttribute('hidden', '');
-    sessionStorage.setItem('dev-banner-closed', '1');
-  });
-})();
-
 /* ============================================================
    Constantes
    ============================================================ */
